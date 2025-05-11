@@ -2,8 +2,11 @@
 # 目的：bbdukでトリミングする
 # 使い方：bbduk_wrap.sh を参照
 
+
+# java verは結果にほぼ影響ないらしいが一応固定したい 
 source ~/.bashrc
 conda activate misc_20250301
+bbduk=~/local/bin/bbmap_39.13/bbduk.sh
 
 
 # 外から指定する引数
@@ -16,9 +19,6 @@ ref="${ref:-/path/to/adapter.fa}"
 stats="${stats:-/path/to/${sample}.stats}"
 thread="${thread:-10}"
 
-
-#- java verは結果にほぼ影響ないらしいが一応固定したい 
-bbduk=~/local/bin/bbmap_39.13/bbduk.sh
 
 ${bbduk} \
   in1=${fq1} \
