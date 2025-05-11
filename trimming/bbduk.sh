@@ -9,12 +9,12 @@ conda activate misc_20250301
 bbduk=~/local/bin/bbmap_39.13/bbduk.sh
 
 
-# 外から指定する引数
+# 外から指定する変数
 sample="${sample:-NA18486}"
 fq1="${fq1:-/path/to/${sample}_R1.fastq.gz}"
 fq2="${fq2:-/path/to/${sample}_R2.fastq.gz}"
-fq1_out="${fq1_out:-/path/to/${sample}_R1.fastq.gz}"
-fq2_out="${fq2_out:-/path/to/${sample}_R2.fastq.gz}"
+fq1_out="${fq1_out:-/path/to/${sample}_R1.trim.fastq.gz}"
+fq2_out="${fq2_out:-/path/to/${sample}_R2.trim.fastq.gz}"
 ref="${ref:-/path/to/adapter.fa}"
 stats="${stats:-/path/to/${sample}.stats}"
 thread="${thread:-10}"
