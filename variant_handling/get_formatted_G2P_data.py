@@ -61,7 +61,7 @@ download_from_URLs( urls )
 
 
 # ステップ２
-df = pd.concat([
+pd.concat([
     pd.read_csv('CardiacG2P_2025-04-28.csv.gz',       quotechar='"'),
     pd.read_csv('DDG2P_2025-04-28.csv.gz',            quotechar='"'),
     pd.read_csv('EyeG2P_2025-04-28.csv.gz',           quotechar='"'),
