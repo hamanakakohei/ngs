@@ -1,0 +1,7 @@
+https://ftp.ebi.ac.uk/pub/databases/gene2phenotype/G2P_data_downloads/2025_04_28/CancerG2P_2025-04-28.csv.gz
+https://ftp.ebi.ac.uk/pub/databases/gene2phenotype/G2P_data_downloads/2025_04_28/CardiacG2P_2025-04-28.csv.gz
+https://ftp.ebi.ac.uk/pub/databases/gene2phenotype/G2P_data_downloads/2025_04_28/DDG2P_2025-04-28.csv.gz
+https://ftp.ebi.ac.uk/pub/databases/gene2phenotype/G2P_data_downloads/2025_04_28/EyeG2P_2025-04-28.csv.gz
+https://ftp.ebi.ac.uk/pub/databases/gene2phenotype/G2P_data_downloads/2025_04_28/HearingLossG2P_2025-04-28.csv.gz
+https://ftp.ebi.ac.uk/pub/databases/gene2phenotype/G2P_data_downloads/2025_04_28/SkeletalG2P_2025-04-28.csv.gz
+https://ftp.ebi.ac.uk/pub/databases/gene2phenotype/G2P_data_downloads/2025_04_28/SkinG2P_2025-04-28.csv.gz

@@ -5,14 +5,21 @@
 # ただしVEPならG2Pプラグインで同様のことを自動でできそうだ
 # VEPが対応していないバリアントフォーマットを出力するツール用になら役立つかもしれない
 
-
+import argparse
 import pandas as pd
 import sys
 import os
 script_dir = os.path.dirname( os.path.abspath(__file__) )
 general_path = os.path.abspath( os.path.join(script_dir, "../../misc/utils") )
 sys.path.append( general_path )
-from general import download_from_URLs
+from general import download_from_URLs, make_concatenated_df, extract_filenames_from_urls 
+
+
+# ステップ０
+parser = argparse.ArgumentParser(description='')
+parser.add_argument('--urls_file', type=str, required=True, help='URLが1行ずつ書かれたファイルのパス')
+parser.add_argument('--out',       type=str, default='G2P_merged_clean_2025-04-28.tsv.gz')
+args = parser.parse_args()
 
 
 # ステップ１
@@ -48,27 +55,16 @@ from general import download_from_URLs
 #
 #See : https://www.ebi.ac.uk/gene2phenotype/beta/about/terminology for further details of the terminology used
 
-urls = [
-  "https://ftp.ebi.ac.uk/pub/databases/gene2phenotype/G2P_data_downloads/2025_04_28/CardiacG2P_2025-04-28.csv.gz",
-  "https://ftp.ebi.ac.uk/pub/databases/gene2phenotype/G2P_data_downloads/2025_04_28/DDG2P_2025-04-28.csv.gz",
-  "https://ftp.ebi.ac.uk/pub/databases/gene2phenotype/G2P_data_downloads/2025_04_28/EyeG2P_2025-04-28.csv.gz",
-  "https://ftp.ebi.ac.uk/pub/databases/gene2phenotype/G2P_data_downloads/2025_04_28/HearingLossG2P_2025-04-28.csv.gz",
-  "https://ftp.ebi.ac.uk/pub/databases/gene2phenotype/G2P_data_downloads/2025_04_28/SkeletalG2P_2025-04-28.csv.gz",
-  "https://ftp.ebi.ac.uk/pub/databases/gene2phenotype/G2P_data_downloads/2025_04_28/SkinG2P_2025-04-28.csv.gz"
-]
+with open( args.urls_file, 'r' ) as f:
+  urls = [ line.strip() for line in f if line.strip() ]
 
-download_from_URLs( urls )
+#download_from_URLs( urls )
 
 
 # ステップ２
-pd.concat([
-    pd.read_csv('CardiacG2P_2025-04-28.csv.gz',       quotechar='"'),
-    pd.read_csv('DDG2P_2025-04-28.csv.gz',            quotechar='"'),
-    pd.read_csv('EyeG2P_2025-04-28.csv.gz',           quotechar='"'),
-    pd.read_csv('HearingLossG2P_2025-04-28.csv.gz',   quotechar='"'),
-    pd.read_csv('SkeletalG2P_2025-04-28.csv.gz',      quotechar='"'),
-    pd.read_csv('SkinG2P_2025-04-28.csv.gz',          quotechar='"')
-  ]).\
+files = extract_filenames_from_urls( urls )
+
+make_concatenated_df( files, quotechar='"' ).\
   drop_duplicates()\
   [[
     'gene symbol',
@@ -82,7 +78,6 @@ pd.concat([
     'variant types',
     'molecular mechanism',
     'molecular mechanism categorisation',
-    'molecular mechanism evidence',
-    'phenotypes'
+    'molecular mechanism evidence'
   ]].\
-  to_csv( 'G2P_2025-04-28.tsv', sep = '\t', index = False )
+  to_csv( args.out, sep = '\t', index = False )
