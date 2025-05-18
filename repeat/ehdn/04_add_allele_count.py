@@ -1,25 +1,37 @@
 #!/usr/bin/env python3
 
 
+"""
+全サンプルで結果をマージしたoutlier locus/motifファイルを基にして、
+指定した発端者で見られた伸長がどの程度珍しいか（全サンプル or コントロールでより長いリピートを持つ人の数）、
+家族の長さはどうか
+をまとめたファイルが出る
+
+入力ファイルの復習
+outlier_locus.annotated.tsvの中身：
+contig  start  end   motif  gene  region    top_case_zscore  high_case_counts       counts
+chr10   1000   1001  CCG    CHD3  intronic  12.0             DA001:12.0,DA002:1.14  DA003:1.14,DA004:1.14
+
+outlier_motif.tsvの中身：
+motif  top_case_zscore  high_case_counts       counts
+CCG    1.44             DA001:2.32,DA002:2.13  DA003:1.13,DA004:1.13
+
+各列の内容（参照：https://github.com/Illumina/ExpansionHunterDenovo/blob/master/documentation/04_Outlier_quickstart.md）
+- top_case_zscore:    Top z-score of a case sample
+- high_case_counts:   Counts of case samples corresponding to z-score greater than 1.0
+- counts:             Nonzero counts for all samples
+"""
+
 import argparse
 import pandas as pd
 
-# 与えるファイルの復習
-# outlier_locus.tsvの中身：
-# contig  start  end   motif  gene  region    top_case_zscore  high_case_counts       counts
-# chr10   1000   1001  CCG    CHD3  intronic  12.0             DA001:12.0,DA002:1.14  DA003:1.14,DA004:1.14
-#
-# outlier_motif.tsvの中身：
-# motif  top_case_zscore  high_case_counts       counts
-# CCG    1.44             DA001:2.32,DA002:2.13  DA003:1.13,DA004:1.13
-#
-# 各列の内容（参照：https://github.com/Illumina/ExpansionHunterDenovo/blob/master/documentation/04_Outlier_quickstart.md）
-# - top_case_zscore:    Top z-score of a case sample
-# - high_case_counts:   Counts of case samples corresponding to z-score greater than 1.0
-# - counts:             Nonzero counts for all samples
-
 
 def select_one_family(df, proband, others, controls):
+    """
+    アレル頻度（発端者より長いリピートを持っている人の数）を出しつつ、
+    家族の各メンバーのリードカウント列を作る
+    """
+
     # 指定した患者が含まれる行に限定
     df = df[df['counts'].str.contains(proband)].copy()
 
@@ -63,7 +75,7 @@ def select_one_family(df, proband, others, controls):
     for member in members:
         df[member] = read_counts_by_member[member]
 
-    return df.drop(columns=['top_case_zscore'])
+    return df.drop(columns=['top_case_zscore'], axis=1)
 
 
 def rename_motif_proband( motif_proband, members ):
@@ -89,7 +101,7 @@ def run():
   parser.add_argument( "--proband",                 type=str, required=True, help="発端者のID" ) 
   parser.add_argument( "--other_family_members",    type=str, required=True, help="他の家族のIDリストのファイル" )
   parser.add_argument( "--controls",                type=str, required=True, help="健常者のIDリストのファイル" )
-  parser.add_argument( "--outlier_locus",           type=str, required=True, help="outlier locus解析の結果" )
+  parser.add_argument( "--outlier_locus",           type=str, required=True, help="outlier locus解析の結果をAnnovarしたもの" )
   parser.add_argument( "--outlier_motif",           type=str, required=True, help="outlier motif解析の結果" )
   parser.add_argument( "--out",                     type=str, required=True, help="" )
   args = parser.parse_args()
