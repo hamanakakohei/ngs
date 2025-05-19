@@ -58,26 +58,34 @@ args = parser.parse_args()
 with open( args.urls_file, 'r' ) as f:
   urls = [ line.strip() for line in f if line.strip() ]
 
-#download_from_URLs( urls )
+download_from_URLs( urls )
 
 
-# ステップ２
+# ステップ２：全ファイルを縦に結合する
 files = extract_filenames_from_urls( urls )
 
-make_concatenated_df( files, quotechar='"' ).\
+df = make_concatenated_df( files, quotechar='"' )
+
+
+# ステップ３：列名を綺麗にしたり選んだり整形する
+df.columns = df.columns.str.replace(' ', '_', regex=False)
+df.columns = [ f"G2P_{col}" for col in df.columns ]
+
+df.\
   drop_duplicates()\
   [[
-    'gene symbol',
-    'hgnc id',
-    'previous gene symbols',
-    'disease name',
-    'allelic requirement',
-    'cross cutting modifier',
-    'confidence',
-    'variant consequence',
-    'variant types',
-    'molecular mechanism',
-    'molecular mechanism categorisation',
-    'molecular mechanism evidence'
+    'G2P_gene_symbol',
+    'G2P_hgnc_id',
+    'G2P_previous_gene_symbols',
+    'G2P_disease_name',
+    'G2P_allelic_requirement',
+    'G2P_cross_cutting_modifier',
+    'G2P_confidence',
+    'G2P_variant_consequence',
+    'G2P_variant_types',
+    'G2P_molecular_mechanism',
+    'G2P_molecular_mechanism_categorisation',
+    'G2P_molecular_mechanism_evidence'
   ]].\
+  rename( {'G2P_gene_symbol': 'gene'}, axis = 1 ).\
   to_csv( args.out, sep = '\t', index = False )

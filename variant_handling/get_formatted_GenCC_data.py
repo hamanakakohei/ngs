@@ -1,9 +1,8 @@
 #!/usr/bin/env python3
 
 
-# 目的：G2Pが提供するを、遺伝子名をキーにして他の表と結合できるように整形する
-# ただしVEPならG2Pプラグインで同様のことを自動でできそうだ
-# VEPが対応していないバリアントフォーマットを出力するツール用になら役立つかもしれない
+# 目的：GenCCが提供する遺伝形式に関するファイルを、遺伝子名をキーにして他の表と結合できるように整形する
+# 今の所、VEPが対応していないので、自前で整形（してバリアントリストと結合）する必要がある
 
 import argparse
 import pandas as pd
@@ -35,16 +34,22 @@ with open( args.urls_file, 'r' ) as f:
 download_from_URLs( urls )
 
 
-# ステップ２
+# ステップ２：ファイルを縦に結合する
 files = extract_filenames_from_urls( urls )
 
-make_concatenated_df( files, sep='\t' ).\
-  drop_duplicates()\
+df = make_concatenated_df( files, sep='\t' )
+
+
+# ステップ３：色々整形する
+df.columns = [ f"GenCC_{col}" for col in df.columns ]
+
+df.drop_duplicates()\
   [[
-    'gene_curie',
-    'gene_symbol',
-    'disease_title',
-    'classification_title',
-    'moi_title'
+    'GenCC_gene_curie',
+    'GenCC_gene_symbol',
+    'GenCC_disease_title',
+    'GenCC_classification_title',
+    'GenCC_moi_title'
   ]].\
+  rename( {'GenCC_gene_symbol': 'gene'}, axis = 1 ).\
   to_csv( args.out, sep = '\t', index = False )
