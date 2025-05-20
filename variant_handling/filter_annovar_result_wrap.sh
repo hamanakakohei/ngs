@@ -20,6 +20,8 @@ argv = arg_parser("") %>%
  # add_argument( "--count_threshold_jpn"   , type="integer",   required=FALSE, default="", help="" ) %>%
 
 
+# 事前にAnnovar以外のコーラー結果（例：XHMM）を整形する
+aa
 
 ./ngs/variant_handling/filter_annovar_result.R \
   --annovar_result /mnt/c/Users/hamanaka/Desktop/Scrivener/Exomeデータ/ataxia61/exome_summary.20220603_192350.txt.gz \

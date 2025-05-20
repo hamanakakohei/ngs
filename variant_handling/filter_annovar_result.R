@@ -37,6 +37,14 @@ argv = arg_parser("") %>%
       sep = "\n"
     ), 
     nargs=Inf ) %>%
+  add_argument( "--other_caller_results"   , type="character", 
+    help=paste(
+      "別のコーラー結果（例：CNV）のファイルを指定する",
+      "カンマかスペース区切りで複数ファイルを指定できる",
+      "事前に整形が必要で、フォーマットはcat_another_caller_variants関数を参照",
+      sep = "\n"
+    ), 
+    nargs=Inf ) %>%
   add_argument( "--out"                   , type="character",  help="" ) %>%
   parse_args()
  # add_argument( "--count_threshold_jpn"   , type="integer",   default="", help="" ) %>%
@@ -55,6 +63,15 @@ df = read_tsv( argv$annovar_result, col_types=cols( Chr="c", CHROM="c" ) ) %>%
     JpnMutation_count_female = map_dbl( INFO, ~get_JpnMutation_sex_chr( .x, SEX="female" ) )
   ) %>%
   unite( "variant_id", c(Chr,Start,End,Ref,Alt), sep="_" ) 
+
+
+# Annovar以外のコーラー結果をあるだけ上下に結合する
+if( !is.na( argv$other_caller_results ) ){
+  for( other_caller_result in argv$other_caller_results ){
+    other_caller_result_df = read_tsv( other_caller_result )
+    df = bind_rows( df, other_caller_result_df )
+  }
+}
 
 
 # キャリアステータス（其バリアントを持っているか？その遺伝子に2hit以上もつか？）を加える 
@@ -81,9 +98,11 @@ if( argv$inheritance == "AR" ){
 
 
 # 遺伝子名に対するアノテーションをあるだけ付ける
-for( gene_annotation in argsv$gene_annotations ){
-  gene_annotation_df = read_tsv( gene_annotation )
-  df = left_join( df, gene_annotation_df, by="gene" )
+if( !is.na( argv$gene_annotations ) ){
+  for( gene_annotation in argv$gene_annotations ){
+    gene_annotation_df = read_tsv( gene_annotation )
+    df = left_join( df, gene_annotation_df, by="gene" )
+  }
 }
 
 
