@@ -50,43 +50,64 @@ argv = arg_parser("") %>%
  # add_argument( "--count_threshold_jpn"   , type="integer",   default="", help="" ) %>%
 
 
-# Annovarの結果を整形する
+# Annovar結果を整形する
 df = read_tsv( argv$annovar_result, col_types=cols( Chr="c", CHROM="c" ) ) %>%
   mutate(
+    gene                     = Gene.refGene,
     maf_exac_all             = as.numeric( ifelse( ExAC_ALL==".", "0", ExAC_ALL ) ),
     maf_exac_eas             = as.numeric( ifelse( ExAC_EAS==".", "0", ExAC_EAS ) ),
     maf_hgvd                 = map_dbl( HGVD, get_hgvd_maf ),
     maf_tommo                = map_dbl( snp20171005_tommo3.5k_passed, get_tommo_maf ),
     JpnMutation_symbol       = map_chr( INFO, get_JpnMutation_symbol ),
     JpnMutation_count        = map_dbl( INFO, get_JpnMutation_count  ),
-    JpnMutation_count_male   = map_dbl( INFO, ~get_JpnMutation_sex_chr( .x, SEX="male"   ) ),
-    JpnMutation_count_female = map_dbl( INFO, ~get_JpnMutation_sex_chr( .x, SEX="female" ) )
+    JpnMutation_count_male   = map_dbl( INFO, ~get_JpnMutation_count_sex_chr( .x, SEX="male"   ) ),
+    JpnMutation_count_female = map_dbl( INFO, ~get_JpnMutation_count_sex_chr( .x, SEX="female" ) ),
+    SpliceAI_max_score       = map_dbl( SpliceAI, get_SpliceAI_max_score )
   ) %>%
-  unite( "variant_id", c(Chr,Start,End,Ref,Alt), sep="_" ) 
+  unite( "variant_id", c(Chr,Start,End,Ref,Alt), sep="_", remove=FALSE ) 
 
 
-# Annovar以外のコーラー結果をあるだけ上下に結合する
-if( !is.na( argv$other_caller_results ) ){
-  for( other_caller_result in argv$other_caller_results ){
-    other_caller_result_df = read_tsv( other_caller_result )
-    df = bind_rows( df, other_caller_result_df )
-  }
-}
+# 興味のないバリアントを除く
+## １：SpliceAIスコアが低いシノニマス
+filter1 = with( df, 
+  ExonicFunc.refGene == "synonymous SNV" & 
+  (is.na(SpliceAI_max_score) | SpliceAI_max_score < 0.1 ) 
+)
+
+## ２：コーディング外でUTRでもなくSpliceAIスコアも低いもの
+filter2 = with( df, 
+  ExonicFunc.refGene == "." & 
+  !str_detect(GeneDetail.refGene, "UTR") & 
+  SpliceAI_max_score < 0.1 
+)
+
+## 以上をまとめて除外する
+exclude = filter1 | filter2
+df = filter( df, !exclude )
 
 
-# キャリアステータス（其バリアントを持っているか？その遺伝子に2hit以上もつか？）を加える 
-list2env( get_variant_carriers( DF ), envir = .GlobalEnv )
-
-df = left_join( df, variant_carriers, by="variant_id" ) %>%
-  left_join( gene_carriers_2hit, by="Gene.refGene" )
-
- 
 # アレル頻度でフィルターする、NAだとしない
 df = df %>%
   filter_af_threshold("maf_hgvd",     argv$af_threshold_hgvd    ) %>%
   filter_af_threshold("maf_tommo",    argv$af_threshold_tommo   ) %>%
   filter_af_threshold("maf_exac_all", argv$af_threshold_exac_all) %>%
   filter_af_threshold("maf_exac_eas", argv$af_threshold_exac_eas)
+
+
+# Annovar以外のコーラー結果をあるだけ上下に結合する
+if( any( !is.na( argv$other_caller_results ) ) ){
+  for( other_caller_result in argv$other_caller_results ){
+    other_caller_result_df = read_tsv( other_caller_result, col_types=cols( Chr="c" ) )
+    df = cat_another_caller_variants( df, other_caller_result_df )
+  }
+}
+
+
+# キャリアステータス（其バリアントを持っているか？その遺伝子に2hit以上もつか？）を加える 
+list2env( get_variant_carriers( df ), envir = .GlobalEnv )
+
+df = left_join( df, variant_carriers, by="variant_id" ) %>%
+  left_join( gene_carriers_2hit, by="Gene.refGene" ) 
 
 
 ## 持っているバリアントのみ
@@ -98,7 +119,7 @@ if( argv$inheritance == "AR" ){
 
 
 # 遺伝子名に対するアノテーションをあるだけ付ける
-if( !is.na( argv$gene_annotations ) ){
+if( any( !is.na( argv$gene_annotations ) ) ){
   for( gene_annotation in argv$gene_annotations ){
     gene_annotation_df = read_tsv( gene_annotation )
     df = left_join( df, gene_annotation_df, by="gene" )

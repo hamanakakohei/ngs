@@ -43,13 +43,25 @@ df = make_concatenated_df( files, sep='\t' )
 # ステップ３：色々整形する
 df.columns = [ f"GenCC_{col}" for col in df.columns ]
 
-df.drop_duplicates()\
-  [[
-    'GenCC_gene_curie',
-    'GenCC_gene_symbol',
-    'GenCC_disease_title',
-    'GenCC_classification_title',
-    'GenCC_moi_title'
-  ]].\
+interest_cols = [
+  'GenCC_gene_curie',
+  'GenCC_gene_symbol',
+  'GenCC_disease_title',
+  'GenCC_classification_title',
+  'GenCC_moi_title'
+]
+
+group_cols = [ 'GenCC_gene_curie', 'GenCC_gene_symbol' ]
+other_cols = [ col for col in interest_cols if col not in group_cols ]
+
+df\
+  [ interest_cols ].\
+  drop_duplicates().\
+  groupby( group_cols ).\
+  agg({
+    col: lambda x: ";".join( map(str,  x) )
+    for col in other_cols
+  }).\
+  reset_index().\
   rename( {'GenCC_gene_symbol': 'gene'}, axis = 1 ).\
   to_csv( args.out, sep = '\t', index = False )

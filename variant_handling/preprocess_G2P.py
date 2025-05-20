@@ -71,21 +71,32 @@ df = make_concatenated_df( files, quotechar='"' )
 df.columns = df.columns.str.replace(' ', '_', regex=False)
 df.columns = [ f"G2P_{col}" for col in df.columns ]
 
-df.\
-  drop_duplicates()\
-  [[
-    'G2P_gene_symbol',
-    'G2P_hgnc_id',
-    'G2P_previous_gene_symbols',
-    'G2P_disease_name',
-    'G2P_allelic_requirement',
-    'G2P_cross_cutting_modifier',
-    'G2P_confidence',
-    'G2P_variant_consequence',
-    'G2P_variant_types',
-    'G2P_molecular_mechanism',
-    'G2P_molecular_mechanism_categorisation',
-    'G2P_molecular_mechanism_evidence'
-  ]].\
+interest_cols = [
+  'G2P_gene_symbol',
+  'G2P_hgnc_id',
+  'G2P_previous_gene_symbols',
+  'G2P_disease_name',
+  'G2P_allelic_requirement',
+  'G2P_cross_cutting_modifier',
+  'G2P_confidence',
+  'G2P_variant_consequence',
+  'G2P_variant_types',
+  'G2P_molecular_mechanism',
+  'G2P_molecular_mechanism_categorisation',
+  'G2P_molecular_mechanism_evidence'
+]
+group_cols = [ 'G2P_gene_symbol', 'G2P_hgnc_id' ]
+other_cols = [ col for col in interest_cols if col not in group_cols ]
+
+df\
+  [ interest_cols ].\
+  drop_duplicates().\
+  groupby( group_cols ).\
+  agg({
+    col: lambda x: ";".join( map(str,  x) )
+    for col in other_cols
+  }).\
+  reset_index().\
   rename( {'G2P_gene_symbol': 'gene'}, axis = 1 ).\
   to_csv( args.out, sep = '\t', index = False )
+
