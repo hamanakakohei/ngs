@@ -1,4 +1,4 @@
-#!/home/hamanaka/miniconda3/envs/misc/bin/Rscript
+#!/usr/bin/env Rscript
 
 
 library(tidyverse)
