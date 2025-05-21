@@ -8,7 +8,44 @@
 ## 🔧 使い方
 
 ```bash
-Rscript filter_annovar_result.R [オプション]
+# AD用
+Rscript filter_annovar_result.R \
+  --annovar_result exome_summary.txt \
+  --out filtered.AD.txt \
+  --af_threshold_exac_tommo 0.0001 \
+  --af_threshold_exac_all 0.0001 \
+  --af_threshold_exac_eas 0.0001 \
+  --inheritance AD \
+  --sample_filter Sample_10000 \
+  --gene_mode_of_inheritance_filter \
+  --gene_annotations cleaned_GenCC.tsv.gz,cleaned_G2P.tsv.gz,cleaned_PanelApp.tsv.gz \
+  --other_caller_results cleaned_xhmm_Sample_10000.tsv.gz
+
+# AR用
+Rscript filter_annovar_result.R \
+  --annovar_result exome_summary.txt \
+  --out filtered.AR.txt \
+  --af_threshold_exac_tommo 0.01 \
+  --af_threshold_exac_all 0.01 \
+  --af_threshold_exac_eas 0.01 \
+  --inheritance AR \
+  --sample_filter Sample_10000 \
+  --gene_mode_of_inheritance_filter \
+  --gene_annotations cleaned_GenCC.tsv.gz,cleaned_G2P.tsv.gz,cleaned_PanelApp.tsv.gz \
+  --other_caller_results cleaned_xhmm_Sample_10000.tsv.gz
+
+# XL用
+Rscript filter_annovar_result.R \
+  --annovar_result exome_summary.txt \
+  --out filtered.XL.txt \
+  --af_threshold_exac_tommo 0.0001 \
+  --af_threshold_exac_all 0.0001 \
+  --af_threshold_exac_eas 0.0001 \
+  --inheritance XL \
+  --sample_filter Sample_10000 \
+  --gene_mode_of_inheritance_filter \
+  --gene_annotations cleaned_GenCC.tsv.gz,cleaned_G2P.tsv.gz,cleaned_PanelApp.tsv.gz \
+  --other_caller_results cleaned_xhmm_Sample_10000.tsv.gz
 ```
 
 ### 必須引数
@@ -46,27 +83,6 @@ Rscript filter_annovar_result.R [オプション]
 | オプション | 説明 |
 |------------|------|
 | `--other_caller_results` | XHMMなど他のコーラーの出力ファイル。複数指定可。事前に整形が必要（例：XHMMは `preprocess_XHMM.py` を使用） |
-
----
-
-## 🧪 実行例
-
-```bash
-Rscript filter_annovar_result.R \
-  --annovar_result exome_summary.txt \
-  --out filtered.txt \
-  --af_threshold_exac_hgvd 0.01 \
-  --af_threshold_exac_tommo 0.01 \
-  --af_threshold_exac_all 0.01 \
-  --af_threshold_exac_eas 0.01 \
-  --inheritance AR \
-  --sample_filter Sample_10000 \
-  --gene_mode_of_inheritance_filter \
-  --gene_annotations cleaned_GenCC.tsv.gz,cleaned_G2P.tsv.gz,cleaned_PanelApp.tsv.gz \
-  --other_caller_results cleaned_xhmm_Sample_10000.tsv.gz
-```
-
-参照：実行用のラッパースクリプト [`filter_annovar_result_wrapper.sh`](./filter_annovar_result_wrapper.sh) 
 
 ---
 
