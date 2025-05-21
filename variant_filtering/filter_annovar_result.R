@@ -2,52 +2,43 @@
 
 
 library(tidyverse)
-library(argparser)
+library(argparse)
+library(glue)
 source("misc/utils/annovar.R")
 
-
-argv = arg_parser("") %>%
-  add_argument( "--annovar_result"        , type="character",  help="" ) %>%
-  add_argument( "--af_threshold_hgvd"     , type="numeric",    help="値を指定しなければNAになり何も起きない" ) %>%
-  add_argument( "--af_threshold_tommo"    , type="numeric",    help="値を指定しなければNAになり何も起きない" ) %>%
-  add_argument( "--af_threshold_exac_all" , type="numeric",    help="値を指定しなければNAになり何も起きない" ) %>%
-  add_argument( "--af_threshold_exac_eas" , type="numeric",    help="値を指定しなければNAになり何も起きない" ) %>%
-  add_argument( "--inheritance"           , type="character",   
-    help=paste(
-      "AD,AR,XLのどれかを指定する",
-      "ARを指定すると、アレル頻度でフィルター後に2個以上バリアントがある遺伝子を返す",
-      sep = "\n"
-    )
-  ) %>%
-  add_argument( "--gene_mode_of_inheritance_filter"         ,  flag=TRUE,
-    help=paste(
-      "OMIM/G2P/GenCCのMOIでフィルターする",
-      "MOI列名は勝手にこっちで想定している",
-      "発端者のみを解析している時向け",
-      "トリオ解析時は新規の遺伝形式も考慮してこのフィルターは外す",
-      sep = "\n"
-    )
-  ) %>%
-  add_argument( "--gene_annotations"      , type="character", 
-    help=paste(
-      "遺伝子に対するアノテーションファイルを指定する",
-      "カンマかスペース区切りで複数ファイルを指定できる",
-      "OMIM、G2P、GenCC、候補遺伝子リストなどを指定する",
-      "遺伝子列名はgeneに統一する",
-      sep = "\n"
-    ), 
-    nargs=Inf ) %>%
-  add_argument( "--other_caller_results"   , type="character", 
-    help=paste(
-      "別のコーラー結果（例：CNV）のファイルを指定する",
-      "カンマかスペース区切りで複数ファイルを指定できる",
-      "事前に整形が必要で、フォーマットはcat_another_caller_variants関数を参照",
-      sep = "\n"
-    ), 
-    nargs=Inf ) %>%
-  add_argument( "--out"                   , type="character",  help="" ) %>%
-  parse_args()
- # add_argument( "--count_threshold_jpn"   , type="integer",   default="", help="" ) %>%
+parser = ArgumentParser(description = "Annovarと他コーラーのバリアント表を統合しつつ、アレル頻度、遺伝形式、対象サンプルなどの条件でフィルターする。")
+parser$add_argument("--annovar_result",        type = "character", required = TRUE, help = "Annovar結果のテーブルファイル")
+parser$add_argument("--out",                   type = "character", required = TRUE, help = "出力ファイル名")
+parser$add_argument("--af_threshold_hgvd",     type = "double",    help = "HGVDのアレル頻度の上限値。指定しない場合はフィルターしない")
+parser$add_argument("--af_threshold_tommo",    type = "double",    help = "ToMMoのアレル頻度の上限値。指定しない場合はフィルターしない")
+parser$add_argument("--af_threshold_exac_all", type = "double",    help = "ExAC ALLのアレル頻度の上限値。指定しない場合はフィルターしない")
+parser$add_argument("--af_threshold_exac_eas", type = "double",    help = "ExAC EASのアレル頻度の上限値。指定しない場合はフィルターしない")
+parser$add_argument("--inheritance",           type = "character", required = TRUE, help = paste(
+                      "出力したい遺伝形式（AD,AR,XLのどれか）を指定する",
+                      "AD,ARなら常染色体のみ、XLならX染色体のバリアントに絞る",
+                      "この指定に基づき、--sample_filter and/or --gene_mode_of_inheritance_filterが実行される",
+                      sep = "\n"))
+parser$add_argument("--sample_filter",        type = "character", help = paste(
+                      "指定したサンプルが保持するバリアントのみを出力",
+                      "--inheritanceでARを指定した場合、そのサンプルで2つ以上のバリアントがある遺伝子に絞り込まれる",
+                      sep = "\n"))
+parser$add_argument("--gene_mode_of_inheritance_filter", action = "store_true", help = paste(
+                      "指定された遺伝形式（--inheritance）と一致する遺伝子のバリアントのみを残す",
+                      "GenCC や G2P 由来の MOI (mode of inheritance) 情報を使用",
+                      "MOI列の名前は内部で想定されている（詳細は filter_by_gene_mode_of_inheritance 関数を参照）",
+                      "トリオ解析時など新規の遺伝形式を探索する時は、このフィルターを外す",
+                      sep = "\n"))
+parser$add_argument("--gene_annotations",      type = "character", nargs = "+", help = paste(
+                      "GenCC、G2P、候補遺伝子リストなどの遺伝子に対するアノテーションファイルを指定",
+                      "複数ファイルの指定はカンマかスペース区切り",
+                      "各ファイルは 'Gene.refGene' という列に遺伝子名を記載する",
+                      sep = "\n"))
+parser$add_argument("--other_caller_results",  type = "character", nargs = "+", help = paste(
+                      "別のコーラー（例：XHMM）の出力ファイルを指定する、カンマかスペース区切りで複数指定可",
+                      "事前に整形が必要で、XHMMの場合はpreprocess_XHMM.pyを使う",
+                      "その他のコーラーの場合、フォーマットはcat_another_caller_variants関数を参照",
+                      sep = "\n"))
+argv = parser$parse_args()
 
 
 # Annovar結果を整形する
@@ -109,11 +100,14 @@ df = left_join( df, variant_carriers, by="variant_id" ) %>%
   left_join( gene_carriers_2hit, by="Gene.refGene" ) 
 
 
-## 持っているバリアントのみ
-#df = filter( df, !is.na(carriers) )
-# ARなら2hit以上の遺伝子のみにする
-if( argv$inheritance == "AR" ){
-  df = filter( df, !is.na( carriers_2hit_on_the_gene ) )
+# 指定したサンプルが持っているバリアントのみ、ARなら2hit以上の遺伝子のみ
+pattern = glue("{argv$sample_filter};")
+
+if( !is.na( argv$sample_filter ) ){
+  df = filter( df, filter( str_detect(carriers, pattern) ) )
+  if( argv$inheritance == "AR" ){
+    df = filter( df, filter( str_detect(carriers_2hit_on_the_gene, pattern) ) )
+  }
 }
 
 
