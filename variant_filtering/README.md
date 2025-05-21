@@ -68,21 +68,21 @@ Rscript filter_annovar_result.R \
 
 | オプション | 説明 |
 |------------|------|
-| `--inheritance` | 遺伝形式を指定：`AD`（常染色体優性）、`AR`（常染色体劣性）、`XL`（X連鎖） |
-| `--sample_filter` | 指定したサンプルで観測されるバリアントのみ出力。AR指定時は、当該サンプルに2つ以上のバリアントがある遺伝子のみ抽出される |
-| `--gene_mode_of_inheritance_filter` | GenCCやG2Pに基づき、指定された遺伝形式に一致する遺伝子のバリアントのみを出力。トリオ解析など探索的解析では無効化を推奨 |
+| `--inheritance` | 遺伝形式を指定：`AD`、`AR`、`XL` |
+| `--sample_filter` | 指定したサンプルで観測されるバリアントのみ出力。AR指定時は、当該サンプルに2つ以上のバリアントがある遺伝子のみ抽出される。|
+| `--gene_mode_of_inheritance_filter` | GenCCやG2Pに基づき、指定された遺伝形式に一致する遺伝子のバリアントのみを出力。トリオ解析など探索的解析では無効化を推奨。 |
 
 ### 遺伝子に対するアノテーションファイルの統合
 
 | オプション | 説明 |
 |------------|------|
-| `--gene_annotations` | 遺伝子に関するアノテーションファイルを複数指定可（GenCC, G2P, PanelAppなど）。各ファイルには 遺伝子名を入れた`Gene.refGene` 列が必要 |
+| `--gene_annotations` | 遺伝子に関するアノテーションファイルを複数指定可（GenCC, G2P, PanelAppなど）。各ファイルには 遺伝子名を入れた`Gene.refGene` 列が必要。 |
 
 ### 他のバリアントコーラーの結果の統合
 
 | オプション | 説明 |
 |------------|------|
-| `--other_caller_results` | XHMMなど他のコーラーの出力ファイル。複数指定可。事前に整形が必要（例：XHMMは `preprocess_XHMM.py` を使用） |
+| `--other_caller_results` | XHMMなど他のコーラーの出力ファイル。複数指定可。事前に整形が必要（例：XHMMは `preprocess_XHMM.py` を使用）。 |
 
 ---
 
