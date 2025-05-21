@@ -107,7 +107,7 @@ Rscript filter_annovar_result.R \
 
 ---
 
-```markdown
+
 ## 🔧 セットアップ方法
 
 このスクリプトは、**RとPythonの両方のパッケージ**を使用します。  
@@ -142,23 +142,3 @@ mamba install -c conda-forge \
 git clone https://github.com/hamanakakohei/ngs
 git clone https://github.com/hamanakakohei/misc
 ```
-
----
-
-### ✅ 3. 実行例や使い方
-
-詳しい使い方や実行例は、`ngs/filter_annovar_result_wrapper.sh` を参照してください。
-
-```
-
----
-
-## 🔎 補足アドバイス
-
-- Python のみ使用する場合は `r-〜` パッケージは不要です。
-- R のみ使用する場合は `pandas numpy requests` を省略できます。
-- 複数の環境を管理したい場合は、`environment.yml` を使った方法もおすすめです（必要であれば生成します）。
-
----
-
-このまま **README.md に貼り付けて使えます**。必要があれば、次に「使い方」セクションも一緒に整備しましょうか？
