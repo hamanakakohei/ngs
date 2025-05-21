@@ -20,6 +20,7 @@
 
 ```bash
 Rscript filter_annovar_result.R [オプション]
+```
 
 必須引数
 オプション	説明
