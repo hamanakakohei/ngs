@@ -38,9 +38,8 @@ Rscript filter_annovar_result.R \
 Rscript filter_annovar_result.R \
   --annovar_result exome_summary.txt \
   --out filtered.XL.txt \
-  --af_threshold_tommo 0.0001 \
-  --af_threshold_exac_all 0.0001 \
-  --af_threshold_exac_eas 0.0001 \
+  --af_threshold_exac_all 0.00005 \
+  --af_threshold_exac_eas 0.0005 \
   --inheritance XL \
   --sample_filter Sample_10000 \
   --gene_mode_of_inheritance_filter \
@@ -69,8 +68,8 @@ Rscript filter_annovar_result.R \
 | オプション | 説明 |
 |------------|------|
 | `--inheritance` | 遺伝形式を指定：`AD`、`AR`、`XL` |
-| `--sample_filter` | 指定したサンプルで観測されるバリアントのみ出力。AR指定時は、当該サンプルに2つ以上のバリアントがある遺伝子のみ抽出される。|
-| `--gene_mode_of_inheritance_filter` | GenCCやG2Pに基づき、指定された遺伝形式に一致する遺伝子のバリアントのみを出力。トリオ解析など探索的解析では無効化を推奨。 |
+| `--sample_filter` | 指定したサンプルで観測されるバリアントのみ出力。`--inheritance`でARを指定時は、当該サンプルに2つ以上のバリアントがある遺伝子のみ抽出される。|
+| `--gene_mode_of_inheritance_filter` | GenCCやG2Pに基づき、`--inheritance`で指定された遺伝形式に一致する遺伝子のバリアントのみを出力。トリオ解析など探索的解析では無効化を推奨。 |
 
 ### 遺伝子に対するアノテーションファイルの統合
 
