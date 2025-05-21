@@ -12,9 +12,9 @@
 Rscript filter_annovar_result.R \
   --annovar_result exome_summary.txt \
   --out filtered.AD.txt \
-  --af_threshold_exac_tommo 0.0001 \
-  --af_threshold_exac_all 0.0001 \
-  --af_threshold_exac_eas 0.0001 \
+  --af_threshold_tommo 0.0005 \
+  --af_threshold_exac_all 0.00005 \
+  --af_threshold_exac_eas 0.0005 \
   --inheritance AD \
   --sample_filter Sample_10000 \
   --gene_mode_of_inheritance_filter \
@@ -25,7 +25,7 @@ Rscript filter_annovar_result.R \
 Rscript filter_annovar_result.R \
   --annovar_result exome_summary.txt \
   --out filtered.AR.txt \
-  --af_threshold_exac_tommo 0.01 \
+  --af_threshold_tommo 0.01 \
   --af_threshold_exac_all 0.01 \
   --af_threshold_exac_eas 0.01 \
   --inheritance AR \
@@ -38,7 +38,7 @@ Rscript filter_annovar_result.R \
 Rscript filter_annovar_result.R \
   --annovar_result exome_summary.txt \
   --out filtered.XL.txt \
-  --af_threshold_exac_tommo 0.0001 \
+  --af_threshold_tommo 0.0001 \
   --af_threshold_exac_all 0.0001 \
   --af_threshold_exac_eas 0.0001 \
   --inheritance XL \
