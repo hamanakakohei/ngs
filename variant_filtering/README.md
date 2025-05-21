@@ -1,6 +1,10 @@
 # variant filtering
 
 Annovarが出力するバリアント表を
+
+アレル頻度でフィルターする
+
+
 - GenCC
 - OMIM
 - G2P
