@@ -1,3 +1,9 @@
+
+---
+
+## ✅ 改善後の `README.md`（日本語版）
+
+```markdown
 # バリアントフィルタリングツール
 
 このリポジトリには、**Annovar** および他のバリアントコーラー（例：**XHMM**）の結果を統合し、  
@@ -22,22 +28,99 @@
 Rscript filter_annovar_result.R [オプション]
 ```
 
-必須引数
-オプション	説明
---annovar_result	Annovarによるアノテーション結果（TSVファイル）
---out	出力ファイル名（TSV形式）
-フィルター条件
-オプション	説明
---af_threshold_hgvd	HGVDのアレル頻度の上限値。指定しなければフィルターしない（NA扱い）
---af_threshold_tommo	ToMMoのアレル頻度の上限値
---af_threshold_exac_all	ExAC（全集団）のアレル頻度の上限値
---af_threshold_exac_eas	ExAC（東アジア集団）のアレル頻度の上限値
-遺伝形式に基づくフィルター
-オプション	説明
---inheritance	遺伝形式を指定：AD（常染色体優性）、AR（常染色体劣性）、XL（X連鎖）
---sample_filter	指定したサンプルで観測されるバリアントのみ出力。AR指定時は、当該サンプルに2つ以上のバリアントがある遺伝子のみ抽出される
---gene_mode_of_inheritance_filter	GenCCやG2Pに基づき、指定された遺伝形式に一致する遺伝子のバリアントのみを出力。トリオ解析など探索的解析では無効化を推奨
-追加のアノテーションファイル・外部ツール出力の統合
-オプション	説明
---gene_annotations	遺伝子に関するアノテーションファイルを複数指定可（GenCC, G2P, PanelAppなど）。各ファイルには Gene.refGene 列が必要
---other_caller_results	XHMMなど他のコーラーの出力ファイル。複数指定可。事前に整形が必要（例：XHMMは preprocess_XHMM.py を使用）
+### 必須引数
+
+| オプション | 説明 |
+|------------|------|
+| `--annovar_result` | Annovarによるアノテーション結果（TSVファイル） |
+| `--out` | 出力ファイル名（TSV形式） |
+
+### フィルター条件
+
+| オプション | 説明 |
+|------------|------|
+| `--af_threshold_hgvd` | HGVDのアレル頻度の上限値。指定しなければフィルターしない（NA扱い） |
+| `--af_threshold_tommo` | ToMMoのアレル頻度の上限値 |
+| `--af_threshold_exac_all` | ExAC（全集団）のアレル頻度の上限値 |
+| `--af_threshold_exac_eas` | ExAC（東アジア集団）のアレル頻度の上限値 |
+
+### 遺伝形式に基づくフィルター
+
+| オプション | 説明 |
+|------------|------|
+| `--inheritance` | 遺伝形式を指定：`AD`（常染色体優性）、`AR`（常染色体劣性）、`XL`（X連鎖） |
+| `--sample_filter` | 指定したサンプルで観測されるバリアントのみ出力。AR指定時は、当該サンプルに2つ以上のバリアントがある遺伝子のみ抽出される |
+| `--gene_mode_of_inheritance_filter` | GenCCやG2Pに基づき、指定された遺伝形式に一致する遺伝子のバリアントのみを出力。トリオ解析など探索的解析では無効化を推奨 |
+
+### 追加のアノテーションファイル・外部ツール出力の統合
+
+| オプション | 説明 |
+|------------|------|
+| `--gene_annotations` | 遺伝子に関するアノテーションファイルを複数指定可（GenCC, G2P, PanelAppなど）。各ファイルには `Gene.refGene` 列が必要 |
+| `--other_caller_results` | XHMMなど他のコーラーの出力ファイル。複数指定可。事前に整形が必要（例：XHMMは `preprocess_XHMM.py` を使用） |
+
+---
+
+## 🧪 実行例
+
+```bash
+Rscript filter_annovar_result.R \
+  --annovar_result example.tsv \
+  --out filtered.tsv \
+  --inheritance AR \
+  --sample_filter Proband001 \
+  --af_threshold_exac_all 0.01 \
+  --gene_annotations gencc.tsv g2p.tsv \
+  --other_caller_results xhmm_results.tsv
+```
+
+また、実行用のラッパースクリプト [`filter_annovar_result_wrapper.sh`](./filter_annovar_result_wrapper.sh) も参考にしてください。
+
+---
+
+## 🔨 補助スクリプト（前処理）
+
+入力に使うファイルを準備するためのスクリプトも同梱されています。
+
+### `--gene_annotations` 用
+
+| スクリプト | 説明 |
+|------------|------|
+| `preprocess_PanelApp.py` | PanelAppの遺伝子リストを整形 |
+| `preprocess_GenCC.py` | GenCCアノテーションを整形 |
+| `preprocess_G2P.py` | G2Pアノテーションを整形 |
+
+### `--other_caller_results` 用
+
+| スクリプト | 説明 |
+|------------|------|
+| `preprocess_XHMM.py` | XHMMの出力を整形 |
+| （その他） | その他のツールについては `cat_another_caller_variants` 関数を参照してください |
+
+---
+
+## 📄 ライセンス
+
+MIT License（[LICENSE](./LICENSE) を参照）
+
+---
+
+## 🙏 謝辞
+
+本ツールは Annovar の出力を元に、外部アノテーションやコーラー結果との統合を通じて、臨床・研究向けの高度なバリアント絞り込みを実現することを目的としています。
+```
+
+---
+
+## ✅ コピペ手順（念のため）
+
+1. 上記Markdownを **そのままコピー**  
+2. GitHubリポジトリのトップ → `README.md` の編集ページを開く  
+3. エディタに **ペースト**  
+4. 下の「Preview」タブで表示を確認  
+5. 問題なければ「Commit changes」で保存
+
+---
+
+必要であれば、**日本語と英語の両対応README**もご用意可能です（例：`README.ja.md` と `README.md`）。  
+また、`filter_annovar_result_wrapper.sh` のテンプレートもお手伝いできますので、お気軽にどうぞ。
