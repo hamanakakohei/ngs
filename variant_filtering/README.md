@@ -50,7 +50,7 @@ Rscript filter_annovar_result.R [オプション]
 
 | オプション | 説明 |
 |------------|------|
-| `--gene_annotations` | 遺伝子に関するアノテーションファイルを複数指定可（GenCC, G2P, PanelAppなど）。各ファイルには `Gene.refGene` 列が必要 |
+| `--gene_annotations` | 遺伝子に関するアノテーションファイルを複数指定可（GenCC, G2P, PanelAppなど）。各ファイルには 遺伝子名を入れた`Gene.refGene` 列が必要 |
 | `--other_caller_results` | XHMMなど他のコーラーの出力ファイル。複数指定可。事前に整形が必要（例：XHMMは `preprocess_XHMM.py` を使用） |
 
 ---
@@ -59,22 +59,26 @@ Rscript filter_annovar_result.R [オプション]
 
 ```bash
 Rscript filter_annovar_result.R \
-  --annovar_result example.tsv \
-  --out filtered.tsv \
-  --inheritance AR \
-  --sample_filter Proband001 \
+  --annovar_result exome_summary.txt \
+  --out filtered.txt \
+  --af_threshold_exac_hgvd 0.01 \
+  --af_threshold_exac_tommo 0.01 \
   --af_threshold_exac_all 0.01 \
-  --gene_annotations gencc.tsv g2p.tsv \
-  --other_caller_results xhmm_results.tsv
+  --af_threshold_exac_eas 0.01 \
+  --inheritance AR \
+  --sample_filter Sample_10000 \
+  --gene_mode_of_inheritance_filter \
+  --gene_annotations cleaned_GenCC.tsv.gz,cleaned_G2P.tsv.gz,cleaned_PanelApp.tsv.gz \
+  --other_caller_results cleaned_xhmm_Sample_10000.tsv.gz
 ```
 
-また、実行用のラッパースクリプト [`filter_annovar_result_wrapper.sh`](./filter_annovar_result_wrapper.sh) も参考にしてください。
+参照：実行用のラッパースクリプト [`filter_annovar_result_wrapper.sh`](./filter_annovar_result_wrapper.sh) 
 
 ---
 
 ## 🔨 補助スクリプト（前処理）
 
-入力に使うファイルを準備するためのスクリプトも同梱されています。
+入力に使うファイルを準備するためのスクリプトも含まれています。
 
 ### `--gene_annotations` 用
 
@@ -89,6 +93,4 @@ Rscript filter_annovar_result.R \
 | スクリプト | 説明 |
 |------------|------|
 | `preprocess_XHMM.py` | XHMMの出力を整形 |
-| （その他） | その他のツールについては `cat_another_caller_variants` 関数を参照してください |
-
----
+| （その他） | 他のコーラー結果を入力したい場合は、列名の要件など `cat_another_caller_variants` 関数を参照してください |
