@@ -5,6 +5,19 @@
 
 ---
 
+## 🔧 インストール方法
+
+```bash
+mamba install -c conda-forge \
+    pandas numpy requests \
+    r-tidyverse r-argparse r-glue
+
+git clone https://github.com/hamanakakohei/ngs
+git clone https://github.com/hamanakakohei/misc
+```
+
+---
+
 ## 🔧 使い方
 
 ```bash
@@ -47,14 +60,14 @@ Rscript filter_annovar_result.R \
   --other_caller_results cleaned_xhmm_Sample_10000.tsv.gz
 ```
 
-### 必須引数
+### 入力と出力
 
 | オプション | 説明 |
 |------------|------|
 | `--annovar_result` | Annovarによるアノテーション結果（TSV） |
 | `--out` | 出力ファイル名（TSV） |
 
-### フィルター条件
+### アレル頻度でフィルター
 
 | オプション | 説明 |
 |------------|------|
@@ -63,7 +76,7 @@ Rscript filter_annovar_result.R \
 | `--af_threshold_exac_all` | ExAC（全集団）のアレル頻度の上限値。指定しなければフィルターしない。 |
 | `--af_threshold_exac_eas` | ExAC（東アジア集団）のアレル頻度の上限値。指定しなければフィルターしない。 |
 
-### 遺伝形式に基づくフィルター
+### 遺伝形式でフィルター
 
 | オプション | 説明 |
 |------------|------|
@@ -77,7 +90,7 @@ Rscript filter_annovar_result.R \
 |------------|------|
 | `--gene_annotations` | 遺伝子に関するアノテーションファイルを複数指定可（GenCC, G2P, PanelAppなど）。各ファイルには 遺伝子名を入れた`Gene.refGene` 列が必要。 |
 
-### 他のバリアントコーラーの結果の統合
+### 他のバリアントコーラー結果の統合
 
 | オプション | 説明 |
 |------------|------|
@@ -85,7 +98,7 @@ Rscript filter_annovar_result.R \
 
 ---
 
-## 🔨 補助スクリプト（前処理）
+## 🔨 前処理用の補助スクリプト
 
 入力に使うファイルを準備するためのスクリプトも含まれています。
 
@@ -103,16 +116,3 @@ Rscript filter_annovar_result.R \
 |------------|------|
 | `preprocess_XHMM.py` | XHMMの出力を整形 |
 | （その他） | 他のコーラー結果を入力したい場合は、列名の要件など `cat_another_caller_variants` 関数を参照してください |
-
----
-
-## 🔧 インストール方法
-
-```bash
-mamba install -c conda-forge \
-    pandas numpy requests \
-    r-tidyverse r-argparse r-glue
-
-git clone https://github.com/hamanakakohei/ngs
-git clone https://github.com/hamanakakohei/misc
-```
