@@ -1,35 +1,15 @@
 #!/usr/bin/env python3
 
 
-# 目的：G2Pが提供するを、遺伝子名をキーにして他の表と結合できるように整形する
-# ただしVEPならG2Pプラグインで同様のことを自動でできそうだ
+# 目的：G2Pのファイルを、遺伝子名をキーにして他の表と結合できるように整形する
+# ただ、VEPならG2Pプラグインで同様のことを自動でできそう
 # VEPが対応していないバリアントフォーマットを出力するツール用になら役立つかもしれない
+# Annovar結果と結合することを考えているので、遺伝子名の列名をGene.refGeneにしている
 
-import argparse
-import pandas as pd
-import sys
-import os
-script_dir = os.path.dirname( os.path.abspath(__file__) )
-general_path = os.path.abspath( os.path.join(script_dir, "../../misc/utils") )
-sys.path.append( general_path )
-from general import download_from_URLs, make_concatenated_df, extract_filenames_from_urls 
-
-
-# ステップ０
-parser = argparse.ArgumentParser(description='')
-parser.add_argument('--urls_file', type=str, required=True, help='URLが1行ずつ書かれたファイルのパス')
-parser.add_argument('--out',       type=str, default='G2P_merged_clean_2025-04-28.tsv.gz')
-args = parser.parse_args()
-
-
-# ステップ１
-# 以下のURLからG2Pデータをダウンロード
-# G2Pデータフォーマット：https://ftp.ebi.ac.uk/pub/databases/gene2phenotype/G2P_data_downloads/DataDownloadFormat202501.txt
-#The latest G2P records can be downloaded on the fly from https://www.ebi.ac.uk/gene2phenotype/beta/download.
-#
-#The G2P csv data release format describes a single G2P entry on each row.
-#
-#The columns in the file are:  
+# G2Pデータについて（https://ftp.ebi.ac.uk/pub/databases/gene2phenotype/G2P_data_downloads/DataDownloadFormat202501.txt）：
+# The latest G2P records can be downloaded on the fly from https://www.ebi.ac.uk/gene2phenotype/beta/download.
+# See : https://www.ebi.ac.uk/gene2phenotype/beta/about/terminology for further details of the terminology used
+# The columns in the file are:  
 #
 #  - g2p id:                               the stable identifier for this record in G2P
 #  - gene symbol:                          the HGNC-assigned gene symbol 
@@ -52,9 +32,23 @@ args = parser.parse_args()
 #  - panel:                                the G2P panel(s) the record is assigned to
 #  - comments:                             additional comments from the curation team ( where available)
 #  - date of last review                   date the record was modified/reviewed 
-#
-#See : https://www.ebi.ac.uk/gene2phenotype/beta/about/terminology for further details of the terminology used
 
+import argparse
+import pandas as pd
+import sys
+import os
+script_dir = os.path.dirname( os.path.abspath(__file__) )
+general_path = os.path.abspath( os.path.join(script_dir, "../../misc/utils") )
+sys.path.append( general_path )
+from general import download_from_URLs, make_concatenated_df, extract_filenames_from_urls 
+
+parser = argparse.ArgumentParser(description='')
+parser.add_argument('--urls_file', type=str, required=True, help='URLが1行ずつ書かれたファイルのパス')
+parser.add_argument('--out',       type=str, default='G2P_merged_clean_2025-04-28.tsv.gz')
+args = parser.parse_args()
+
+
+# ステップ１：指定したURLからG2Pデータをダウンロード
 with open( args.urls_file, 'r' ) as f:
   urls = [ line.strip() for line in f if line.strip() ]
 
@@ -67,7 +61,7 @@ files = extract_filenames_from_urls( urls )
 df = make_concatenated_df( files, quotechar='"' )
 
 
-# ステップ３：列名を綺麗にしたり選んだり整形する
+# ステップ３：整形して保存する
 df.columns = df.columns.str.replace(' ', '_', regex=False)
 df.columns = [ f"G2P_{col}" for col in df.columns ]
 
@@ -97,6 +91,6 @@ df\
     for col in other_cols
   }).\
   reset_index().\
-  rename( {'G2P_gene_symbol': 'gene'}, axis = 1 ).\
+  rename( {'G2P_gene_symbol': 'Gene.refGene'}, axis = 1 ).\
   to_csv( args.out, sep = '\t', index = False )
 

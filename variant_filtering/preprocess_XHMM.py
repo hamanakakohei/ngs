@@ -2,6 +2,11 @@
 
 
 # 目的：XHMMのコール結果を、Annovarのコール結果と上下に結合できるように整形する
+# どういう列にどういう値を残すかだが、本スクリプトのフィルターで想定外の除かれかたをしないように注意しないといけない
+# XHMMのデフォルトの出力結果を使えればシンプルだが、遺伝子との被りを自分で調べないといけなくなるので、
+# すでにそれを付けているファイルを利用している（data.segdup.strvar.haplo.deciph.omim.xcnv.gene）
+# サンプル名を列名に使ってAnnovar結果と上下に結合するので正確に指定する
+
 import argparse
 import pandas as pd
 import numpy as np
@@ -26,7 +31,7 @@ df = pd.read_table( args.xhmm_result )
 df[['Chr', 'Start', 'End']] = df['INTERVAL'].str.extract(r'([^:]+):(\d+)-(\d+)')
 
 
-# ジェノタイプは 0/1 に固定
+# ジェノタイプを適当につける
 df[ args.sample ] = np.where(
   df[ 'MEAN_ORIG_RD' ].astype(float) <= args.threshold_for_homo_del,
   '1/1',

@@ -1,29 +1,9 @@
 #!/usr/bin/env python3
 
 
-# 目的：GenCCが提供する遺伝形式に関するファイルを、遺伝子名をキーにして他の表と結合できるように整形する
-# 今の所、VEPが対応していないので、自前で整形（してバリアントリストと結合）する必要がある
-
-import argparse
-import pandas as pd
-import sys
-import os
-script_dir = os.path.dirname( os.path.abspath(__file__) )
-general_path = os.path.abspath( os.path.join(script_dir, "../../misc/utils") )
-sys.path.append( general_path )
-from general import make_concatenated_df, extract_filenames_from_urls 
-from datetime import date
-
-
-today_str = date.today().strftime('%Y_%m_%d')  # 例: '2025_05_16'
-default_filename = f'PanelApp_clean_{today_str}.tsv.gz'
-
-
-# ステップ０
-parser = argparse.ArgumentParser(description='')
-parser.add_argument('--PanelApp_files', type=str, required=True, help='ダウンロードしたPanelAppファイルが1行ずつ書かれたファイルのパス')
-parser.add_argument('--out',       type=str, default=default_filename)
-args = parser.parse_args()
+# 目的：（注目している疾患の候補遺伝子リストをPanelAppから事前にダウンロードして）GenCCが提供する遺伝形式に関するファイルを、遺伝子名をキーにして他の表と結合できるように整形する
+# Annovar結果と結合することを考えているので、遺伝子名の列名をGene.refGeneにしている
+# VEPを使えば、G2PプラグインでPanelAppデータを使ったフィルタリングが出来る（https://www.ebi.ac.uk/gene2phenotype/variant-filtering）
 
 # PanelAppファイルの列の説明（https://panelapp.genomicsengland.co.uk/#!Navigating）：
 # - Entity Name (gene name, STR name, region name)
@@ -63,14 +43,25 @@ args = parser.parse_args()
 # - Region Variant Type
 # - Region Verbose Name
 
-# - Gene Symbol (HGNC-approved gene symbol)
-# - HGNC ID
-# - Phenotypes (as collected from all sources and reviews)
-# - Position GRCh37 start
-# - Position GRCh37 end
-# - STR Repeated Sequence
-# - STR Normal Repeats
-# - STR Pathogenic Repeats
+import argparse
+import pandas as pd
+import sys
+import os
+script_dir = os.path.dirname( os.path.abspath(__file__) )
+general_path = os.path.abspath( os.path.join(script_dir, "../../misc/utils") )
+sys.path.append( general_path )
+from general import make_concatenated_df, extract_filenames_from_urls 
+from datetime import date
+
+
+today_str = date.today().strftime('%Y_%m_%d')  # 例: '2025_05_16'
+default_filename = f'PanelApp_clean_{today_str}.tsv.gz'
+
+parser = argparse.ArgumentParser(description='')
+parser.add_argument('--PanelApp_files', type=str, required=True, help='ダウンロードしたPanelAppファイルが1行ずつ書かれたファイルのパス')
+parser.add_argument('--out',       type=str, default=default_filename)
+args = parser.parse_args()
+
 
 # ステップ１：PanelAppファイルを縦に結合する
 with open( args.PanelApp_files, 'r' ) as f:
@@ -79,7 +70,7 @@ with open( args.PanelApp_files, 'r' ) as f:
 df = make_concatenated_df( files, sep='\t' )
 
 
-# ステップ２：色々整形する
+# ステップ２：整形して保存する
 df.columns = df.columns.str.replace(' ', '_', regex=False)
 df.columns = [ f"PanelApp_{col}" for col in df.columns ]
 
@@ -108,6 +99,6 @@ df\
     for col in other_cols
   }).\
   reset_index().\
-  rename( {'PanelApp_Gene_Symbol': 'gene'}, axis = 1 ).\
+  rename( {'PanelApp_Gene_Symbol': 'Gene.refGene'}, axis = 1 ).\
   to_csv( args.out, sep = '\t', index = False )
 

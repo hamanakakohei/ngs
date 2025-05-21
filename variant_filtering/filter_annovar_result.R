@@ -53,7 +53,6 @@ argv = arg_parser("") %>%
 # Annovar結果を整形する
 df = read_tsv( argv$annovar_result, col_types=cols( Chr="c", CHROM="c" ) ) %>%
   mutate(
-    gene                     = Gene.refGene,
     maf_exac_all             = as.numeric( ifelse( ExAC_ALL==".", "0", ExAC_ALL ) ),
     maf_exac_eas             = as.numeric( ifelse( ExAC_EAS==".", "0", ExAC_EAS ) ),
     maf_hgvd                 = map_dbl( HGVD, get_hgvd_maf ),
@@ -122,7 +121,7 @@ if( argv$inheritance == "AR" ){
 if( any( !is.na( argv$gene_annotations ) ) ){
   for( gene_annotation in argv$gene_annotations ){
     gene_annotation_df = read_tsv( gene_annotation )
-    df = left_join( df, gene_annotation_df, by="gene" )
+    df = left_join( df, gene_annotation_df, by="Gene.refGene" )
   }
 }
 
@@ -139,36 +138,3 @@ if( argv$gene_mode_of_inheritance_filter ){
 
 # 保存する
 write_tsv( df, argv$out, col_names=TRUE )
-
-
-
-
-
-#if ( !is.null( argv$count_threshold_jpn ) ) {
-#  df = filter( df, JpnMutation_count < argv$count_threshold_jpn )
-#}
-#
-#EXOMESUMMARY_PATH           = argv$exomesummary
-#GENE_CANDIDATE.STATUS_PATH  = argv$gene_candidate 
-#GENE_OMIM.STATUS_PATH       = argv$gene_omim
-#HGVD.THR	                = as.numeric(argv$hgvd)     #0.0001
-#TOMMO.THR	                = as.numeric(argv$tommo)    #0.0001
-#JPNCOUNT.THR                = as.numeric(argv$jpncount) #0
-#EXACALL.THR	                = as.numeric(argv$exacall)  #0.0001
-#EXACEAS.THR                 = as.numeric(argv$exaceas)  #0.0001
-#INHERITANCE                        = argv$inheritance  #"AD" # AR, XL
-#OUT                         = argv$out          #"output.txt"
-#
-#GENE_CANDIDATE.STATUS_PATH="/archive3/hamanaka/resource/gene_candidate.status__for.SCD.txt"
-#GENE_OMIM.STATUS_PATH="/archive3/hamanaka/resource/omim.genemap2.edit.txt"
-##EXOMESUMMARY_PATH="/betelgeuse01/analysis/191213_156batch_NovaSeq_singleindex_analysis/Project_SCD_shinshu_sporadic/annovar/exome_summary.20191225_144612.txt"
-#EXOMESUMMARY_PATH="/betelgeuse04/analysis/hamanaka/jointgt.13851/scos/Sample_14222/annovar/exome_summary.20200914_202707.txt"
-#HGVD.THR	                = 0.01
-#TOMMO.THR	                = 0.01
-#JPNCOUNT.THR                = 5
-#EXACALL.THR	                = 0.01
-#EXACEAS.THR                 = 0.01
-#TYPE                        = "AD" #, XL
-#OUT                         = "output.ar.2308.txt"
-#DDG2P="/betelgeuse04/analysis/hamanaka/resource/gene_inhe__DDG2P.13.9.2020mod.txt"
-#DDG2P="/betelgeuse07/analysis/hamanaka/resource/gene_inhe__DDG2P.13.9.2020mod.txt"
