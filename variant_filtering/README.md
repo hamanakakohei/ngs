@@ -103,3 +103,62 @@ Rscript filter_annovar_result.R \
 |------------|------|
 | `preprocess_XHMM.py` | XHMMの出力を整形 |
 | （その他） | 他のコーラー結果を入力したい場合は、列名の要件など `cat_another_caller_variants` 関数を参照してください |
+
+
+---
+
+```markdown
+## 🔧 セットアップ方法
+
+このスクリプトは、**RとPythonの両方のパッケージ**を使用します。  
+以下の手順で、必要な依存関係をまとめてインストールできます。
+
+### ✅ 1. Conda 環境の構築（推奨：mamba 使用）
+
+[mamba](https://github.com/mamba-org/mamba) は `conda` の高速代替です。未導入の場合は先に `mamba` をインストールしてください。
+
+以下のコマンドを実行して、必要なライブラリを一括インストールします：
+
+```bash
+mamba install -c conda-forge \
+    pandas numpy requests \
+    r-tidyverse r-argparse r-glue
+```
+
+> 📌 補足：`conda-forge` チャネルを利用することで、安定かつ最新のパッケージを取得できます。  
+> 初回のみ、以下のコマンドで設定しておくと便利です：
+> ```bash
+> conda config --add channels conda-forge
+> conda config --set channel_priority strict
+> ```
+
+---
+
+### ✅ 2. スクリプトの取得
+
+必要なリポジトリを `git clone` で取得してください。
+
+```bash
+git clone https://github.com/hamanakakohei/ngs
+git clone https://github.com/hamanakakohei/misc
+```
+
+---
+
+### ✅ 3. 実行例や使い方
+
+詳しい使い方や実行例は、`ngs/filter_annovar_result_wrapper.sh` を参照してください。
+
+```
+
+---
+
+## 🔎 補足アドバイス
+
+- Python のみ使用する場合は `r-〜` パッケージは不要です。
+- R のみ使用する場合は `pandas numpy requests` を省略できます。
+- 複数の環境を管理したい場合は、`environment.yml` を使った方法もおすすめです（必要であれば生成します）。
+
+---
+
+このまま **README.md に貼り付けて使えます**。必要があれば、次に「使い方」セクションも一緒に整備しましょうか？
