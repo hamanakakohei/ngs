@@ -92,29 +92,3 @@ Rscript filter_annovar_result.R \
 | （その他） | その他のツールについては `cat_another_caller_variants` 関数を参照してください |
 
 ---
-
-## 📄 ライセンス
-
-MIT License（[LICENSE](./LICENSE) を参照）
-
----
-
-## 🙏 謝辞
-
-本ツールは Annovar の出力を元に、外部アノテーションやコーラー結果との統合を通じて、臨床・研究向けの高度なバリアント絞り込みを実現することを目的としています。
-```
-
----
-
-## ✅ コピペ手順（念のため）
-
-1. 上記Markdownを **そのままコピー**  
-2. GitHubリポジトリのトップ → `README.md` の編集ページを開く  
-3. エディタに **ペースト**  
-4. 下の「Preview」タブで表示を確認  
-5. 問題なければ「Commit changes」で保存
-
----
-
-必要であれば、**日本語と英語の両対応README**もご用意可能です（例：`README.ja.md` と `README.md`）。  
-また、`filter_annovar_result_wrapper.sh` のテンプレートもお手伝いできますので、お気軽にどうぞ。
