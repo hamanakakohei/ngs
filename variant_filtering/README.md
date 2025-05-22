@@ -82,8 +82,8 @@ Rscript filter_annovar_result.R \
 | オプション | 説明 |
 |------------|------|
 | `--inheritance` | 遺伝形式を指定：`AD`、`AR`、`XL` |
-| `--sample_filter` | 指定したサンプルで観測されるバリアントのみ出力。`--inheritance`でARを指定時は、当該サンプルに2つ以上のバリアントがある遺伝子のみ抽出される。|
-| `--gene_mode_of_inheritance_filter` | GenCCやG2Pに基づき、`--inheritance`で指定された遺伝形式に一致する遺伝子のバリアントのみを出力。トリオ解析など探索的解析では無効化を推奨。 |
+| `--sample_filter` | 指定したサンプルで見られるバリアントのみ出力。`--inheritance`でARを指定時は、当該サンプルに2つ以上のバリアントがある遺伝子のみ抽出される。|
+| `--gene_mode_of_inheritance_filter` | GenCCやG2Pに基づき、`--inheritance`で指定された遺伝形式に一致する遺伝子のバリアントのみを出力。トリオ解析など探索的解析ではこのオプションは外す。 |
 
 ### 遺伝子に対するアノテーションファイルの統合
 
@@ -111,9 +111,14 @@ Rscript filter_annovar_result.R \
 | `preprocess_GenCC.py` | GenCCアノテーションを整形 |
 | `preprocess_G2P.py` | G2Pアノテーションを整形 |
 
+処理済みのファイルはngs/variant_filtering/result以下にあります：
+- cleaned_G2P_2025-04-28.tsv.gz
+- cleaned_GenCC_2025_05_20.tsv.gz
+- cleaned_PanelApp_ataxia_2025_05_20.tsv.gz
+
 ### `--other_caller_results` 用
 
 | スクリプト | 説明 |
 |------------|------|
 | `preprocess_XHMM.py` | XHMMの出力を整形 |
-| （その他） | 他のコーラー結果を入力したい場合は、列名の要件など `cat_another_caller_variants` 関数を参照してください |
+| （その他） | 他のコーラー結果を入力したい場合は、列名の要件など misc/utils/annovar.R内の`cat_another_caller_variants` 関数を参照してください |
