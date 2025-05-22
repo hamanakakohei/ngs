@@ -76,7 +76,7 @@ exclude = filter1 | filter2
 df = filter( df, !exclude )
 
 
-# アレル頻度でフィルターする、NAだとしない
+# アレル頻度でフィルターする、NAやNULLだとしない
 df = df %>%
   filter_af_threshold("maf_hgvd",     argv$af_threshold_hgvd    ) %>%
   filter_af_threshold("maf_tommo",    argv$af_threshold_tommo   ) %>%
