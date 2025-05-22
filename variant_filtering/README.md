@@ -87,7 +87,8 @@ Rscript filter_annovar_result.R \
 
 ### バリアント機能でフィルター（オプションではない）
 
-`ExonicFunc.refGene == "synonymous SNV" & (is.na(SpliceAI_max_score) | SpliceAI_max_score < 0.1 )` 
+`ExonicFunc.refGene == "synonymous SNV" & SpliceAI_max_score < 0.1`
+
 `ExonicFunc.refGene == "." & !str_detect(GeneDetail.refGene, "UTR") &　SpliceAI_max_score < 0.1`
 
 ### 遺伝子に対するアノテーションファイルの統合
