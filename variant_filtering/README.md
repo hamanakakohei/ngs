@@ -32,7 +32,7 @@ Rscript filter_annovar_result.R \
   --inheritance AD \
   --sample_filter Sample_10000 \
   --gene_mode_of_inheritance_filter \
-  --gene_annotations cleaned_GenCC.tsv.gz,cleaned_G2P.tsv.gz,cleaned_PanelApp.tsv.gz \
+  --gene_annotations cleaned_GenCC.tsv.gz cleaned_G2P.tsv.gz cleaned_PanelApp.tsv.gz \
   --other_caller_results cleaned_xhmm_Sample_10000.tsv.gz
 
 # AR用
@@ -45,7 +45,7 @@ Rscript filter_annovar_result.R \
   --inheritance AR \
   --sample_filter Sample_10000 \
   --gene_mode_of_inheritance_filter \
-  --gene_annotations cleaned_GenCC.tsv.gz,cleaned_G2P.tsv.gz,cleaned_PanelApp.tsv.gz \
+  --gene_annotations cleaned_GenCC.tsv.gz cleaned_G2P.tsv.gz cleaned_PanelApp.tsv.gz \
   --other_caller_results cleaned_xhmm_Sample_10000.tsv.gz
 
 # XL用
@@ -57,7 +57,7 @@ Rscript filter_annovar_result.R \
   --inheritance XL \
   --sample_filter Sample_10000 \
   --gene_mode_of_inheritance_filter \
-  --gene_annotations cleaned_GenCC.tsv.gz,cleaned_G2P.tsv.gz,cleaned_PanelApp.tsv.gz \
+  --gene_annotations cleaned_GenCC.tsv.gz cleaned_G2P.tsv.gz cleaned_PanelApp.tsv.gz \
   --other_caller_results cleaned_xhmm_Sample_10000.tsv.gz
 ```
 
@@ -96,13 +96,13 @@ Rscript filter_annovar_result.R \
 
 | オプション | 説明 |
 |------------|------|
-| `--gene_annotations` | 遺伝子に関するアノテーションファイルを、カンマかスペース区切りで複数指定可（GenCC, G2P, PanelAppなど）。各ファイルには 遺伝子名を入れた`Gene.refGene` 列が必要。 |
+| `--gene_annotations` | 遺伝子に関するアノテーションファイルを、スペース区切りで複数指定可（GenCC, G2P, PanelAppなど）。各ファイルには 遺伝子名を入れた`Gene.refGene` 列が必要。 |
 
 ### 他のバリアントコーラー結果の統合
 
 | オプション | 説明 |
 |------------|------|
-| `--other_caller_results` | XHMMなど他のコーラーの出力ファイル。カンマかスペース区切りで複数指定可。事前に整形が必要（例：XHMMは `preprocess_XHMM.py` を使用）。 |
+| `--other_caller_results` | XHMMなど他のコーラーの出力ファイル。スペース区切りで複数指定可。事前に整形が必要（例：XHMMは `preprocess_XHMM.py` を使用）。 |
 
 ---
 
