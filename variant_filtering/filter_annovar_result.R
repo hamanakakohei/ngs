@@ -30,11 +30,11 @@ parser$add_argument("--gene_mode_of_inheritance_filter", action = "store_true", 
                       sep = "\n"))
 parser$add_argument("--gene_annotations",      type = "character", nargs = "+", help = paste(
                       "GenCC、G2P、候補遺伝子リストなどの遺伝子に対するアノテーションファイルを指定",
-                      "複数ファイルの指定はカンマかスペース区切り",
+                      "複数ファイルの指定はスペース区切り",
                       "各ファイルは 'Gene.refGene' という列に遺伝子名を記載する",
                       sep = "\n"))
 parser$add_argument("--other_caller_results",  type = "character", nargs = "+", help = paste(
-                      "別のコーラー（例：XHMM）の出力ファイルを指定する、カンマかスペース区切りで複数指定可",
+                      "別のコーラー（例：XHMM）の出力ファイルを指定する、スペース区切りで複数指定可",
                       "事前に整形が必要で、XHMMの場合はpreprocess_XHMM.pyを使う",
                       "その他のコーラーの場合、フォーマットはcat_another_caller_variants関数を参照",
                       sep = "\n"))
@@ -85,7 +85,7 @@ df = df %>%
 
 
 # Annovar以外のコーラー結果をあるだけ上下に結合する
-if( any( !is.na( argv$other_caller_results ) ) ){
+if( any( !is.null( argv$other_caller_results ) ) ){
   for( other_caller_result in argv$other_caller_results ){
     other_caller_result_df = read_tsv( other_caller_result, col_types=cols( Chr="c" ) )
     df = cat_another_caller_variants( df, other_caller_result_df )
@@ -103,16 +103,16 @@ df = left_join( df, variant_carriers, by="variant_id" ) %>%
 # 指定したサンプルが持っているバリアントのみ、ARなら2hit以上の遺伝子のみ
 pattern = glue("{argv$sample_filter};")
 
-if( !is.na( argv$sample_filter ) ){
-  df = filter( df, filter( str_detect(carriers, pattern) ) )
+if( !is.null( argv$sample_filter ) ){
+  df = filter( df, str_detect(carriers, pattern) ) 
   if( argv$inheritance == "AR" ){
-    df = filter( df, filter( str_detect(carriers_2hit_on_the_gene, pattern) ) )
+    df = filter( df, str_detect(carriers_2hit_on_the_gene, pattern) ) 
   }
 }
 
 
 # 遺伝子名に対するアノテーションをあるだけ付ける
-if( any( !is.na( argv$gene_annotations ) ) ){
+if( any( !is.null( argv$gene_annotations ) ) ){
   for( gene_annotation in argv$gene_annotations ){
     gene_annotation_df = read_tsv( gene_annotation )
     df = left_join( df, gene_annotation_df, by="Gene.refGene" )
@@ -131,4 +131,6 @@ if( argv$gene_mode_of_inheritance_filter ){
 
 
 # 保存する
-write_tsv( df, argv$out, col_names=TRUE )
+df %>% 
+  arrange( Gene.refGene, variant_id ) %>%
+ write_tsv( argv$out, col_names=TRUE )

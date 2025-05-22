@@ -1,4 +1,4 @@
-ngs/variant_handling/data/Ataxia and cerebellar anomalies - narrow panel.tsv
-ngs/variant_handling/data/Hereditary ataxia and cerebellar anomalies - childhood onset.tsv
-ngs/variant_handling/data/Hereditary ataxia with onset in adulthood.tsv
-ngs/variant_handling/data/Hereditary ataxia.tsv
+ngs/variant_filtering/data/Ataxia and cerebellar anomalies - narrow panel.tsv
+ngs/variant_filtering/data/Hereditary ataxia and cerebellar anomalies - childhood onset.tsv
+ngs/variant_filtering/data/Hereditary ataxia with onset in adulthood.tsv
+ngs/variant_filtering/data/Hereditary ataxia.tsv
