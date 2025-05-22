@@ -121,4 +121,23 @@ Rscript filter_annovar_result.R \
 | スクリプト | 説明 |
 |------------|------|
 | `preprocess_XHMM.py` | XHMMの出力を整形 |
-| （その他） | 他のコーラー結果を入力したい場合は、列名の要件など misc/utils/annovar.R内の`cat_another_caller_variants` 関数を参照してください |
+| （その他） | 他のコーラー結果を入力したい場合は、列名の要件など`misc/utils/annovar.R` 内の`cat_another_caller_variants` 関数を参照してください |
+
+### 使い方
+
+```bash
+format_xhmm_for_annovar.py \
+  --xhmm_result data.segdup.strvar.haplo.deciph.omim.xcnv.gene \
+  --sample Sample_10000 \
+  --depth_threshold_for_homo_del 8 \
+  --out cleaned_XHMM_Sample_10000.tsv.gz
+```
+
+#### 引数の説明
+
+| 引数 | 説明 |
+|------|------|
+| `--xhmm_result` | XHMM結果ファイル（遺伝子情報付き） |
+| `--sample` | 対象とするサンプル名（SAMPLE列に含まれる） |
+| `--threshold_for_homo_del` | ホモ欠失（1/1）とみなすMEAN_ORIG_RDの閾値（デフォルト: `5`） |
+| `--out` | 出力ファイル名 |
