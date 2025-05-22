@@ -15,7 +15,7 @@ import numpy as np
 parser = argparse.ArgumentParser(description='')
 parser.add_argument('--xhmm_result', type=str,   required=True, help='data.segdup.strvar.haplo.deciph.omim.xcnv.gene')
 parser.add_argument('--sample',      type=str,   required=True, help='SAMPLE列でサンプルを選ぶのに使う')
-parser.add_argument('--threshold_for_homo_del',      type=float, default=5,     help='ホモ欠失とみなす平均デプスの閾値')
+parser.add_argument('--depth_threshold_for_homo_del',      type=float, default=10,     help='ホモ欠失とみなす平均デプスの閾値')
 parser.add_argument('--out',         type=str,   required=True)
 args = parser.parse_args()
 
@@ -33,7 +33,7 @@ df[['Chr', 'Start', 'End']] = df['INTERVAL'].str.extract(r'([^:]+):(\d+)-(\d+)')
 
 # ジェノタイプを適当につける
 df[ args.sample ] = np.where(
-  df[ 'MEAN_ORIG_RD' ].astype(float) <= args.threshold_for_homo_del,
+  df[ 'MEAN_ORIG_RD' ].astype(float) <= args.depth_threshold_for_homo_del,
   '1/1',
   '0/1'
 )
