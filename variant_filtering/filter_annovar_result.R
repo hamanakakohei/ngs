@@ -133,4 +133,4 @@ if( argv$gene_mode_of_inheritance_filter ){
 # 保存する
 df %>% 
   arrange( Gene.refGene, variant_id ) %>%
- write_tsv( argv$out, col_names=TRUE )
+  write_tsv( argv$out, col_names=TRUE )
