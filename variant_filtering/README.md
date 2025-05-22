@@ -23,7 +23,7 @@ git clone https://github.com/hamanakakohei/misc
 
 ```bash
 # AD用
-Rscript filter_annovar_result.R \
+filter_annovar_result.R \
   --annovar_result exome_summary.txt \
   --out exome_summary.filtered.AD.txt \
   --af_threshold_tommo 0.0005 \
@@ -36,7 +36,7 @@ Rscript filter_annovar_result.R \
   --other_caller_results cleaned_xhmm_Sample_10000.tsv.gz
 
 # AR用
-Rscript filter_annovar_result.R \
+filter_annovar_result.R \
   --annovar_result exome_summary.txt \
   --out exome_summary.filtered.AR.txt \
   --af_threshold_tommo 0.01 \
@@ -49,7 +49,7 @@ Rscript filter_annovar_result.R \
   --other_caller_results cleaned_xhmm_Sample_10000.tsv.gz
 
 # XL用
-Rscript filter_annovar_result.R \
+filter_annovar_result.R \
   --annovar_result exome_summary.txt \
   --out exome_summary.filtered.XL.txt \
   --af_threshold_exac_all 0.00005 \
@@ -133,7 +133,7 @@ Rscript filter_annovar_result.R \
 ### 使い方
 
 ```bash
-format_xhmm_for_annovar.py \
+preprocess_XHMM.py \
   --xhmm_result data.segdup.strvar.haplo.deciph.omim.xcnv.gene \
   --sample Sample_10000 \
   --depth_threshold_for_homo_del 10 \
