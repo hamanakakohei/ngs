@@ -85,6 +85,11 @@ Rscript filter_annovar_result.R \
 | `--sample_filter` | 指定したサンプルで見られるバリアントのみ出力。`--inheritance`でARを指定時は、当該サンプルに2つ以上のバリアントがある遺伝子のみ抽出される。|
 | `--gene_mode_of_inheritance_filter` | GenCCやG2Pに基づき、`--inheritance`で指定された遺伝形式に一致する遺伝子のバリアントのみを出力。トリオ解析など探索的解析ではこのオプションは外す。 |
 
+### バリアント機能でフィルター（オプションではない）
+
+`ExonicFunc.refGene == "synonymous SNV" & (is.na(SpliceAI_max_score) | SpliceAI_max_score < 0.1 )` 
+`ExonicFunc.refGene == "." & !str_detect(GeneDetail.refGene, "UTR") &　SpliceAI_max_score < 0.1`
+
 ### 遺伝子に対するアノテーションファイルの統合
 
 | オプション | 説明 |
