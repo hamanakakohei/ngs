@@ -83,7 +83,7 @@ filter_annovar_result.R \
 |------------|------|
 | `--inheritance` | 遺伝形式を指定：`AD`、`AR`、`XL` |
 | `--sample_filter` | 指定したサンプルで見られるバリアントのみ出力。`--inheritance`でARを指定時は、当該サンプルに2つ以上のバリアントがある遺伝子のみ抽出される。|
-| `--gene_mode_of_inheritance_filter` | GenCCやG2Pに基づき、`--inheritance`で指定された遺伝形式に一致する遺伝子のバリアントのみを出力。トリオ解析など探索的解析ではこのオプションは外す。 |
+| `--gene_mode_of_inheritance_filter` | GenCCやG2Pに基づき、`--inheritance`で指定された遺伝形式で疾患を伝える遺伝子のバリアントのみを出力。トリオ解析など探索的解析ではこのオプションは外す。 |
 
 ### バリアント機能でフィルター
 
