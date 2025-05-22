@@ -129,13 +129,13 @@ Rscript filter_annovar_result.R \
 format_xhmm_for_annovar.py \
   --xhmm_result data.segdup.strvar.haplo.deciph.omim.xcnv.gene \
   --sample Sample_10000 \
-  --depth_threshold_for_homo_del 8 \
+  --depth_threshold_for_homo_del 10 \
   --out cleaned_XHMM_Sample_10000.tsv.gz
 ```
 
 | 引数 | 説明 |
 |------|------|
 | `--xhmm_result` | XHMM結果ファイル（遺伝子情報付き） |
-| `--sample` | 対象とするサンプル名（SAMPLE列に含まれる） |
-| `--depth_threshold_for_homo_del` | ホモ欠失（1/1）とみなすMEAN_ORIG_RDの閾値（デフォルト: `5`） |
+| `--sample` | 対象とするサンプル名（XHMM結果ファイルのSAMPLE列からこの指定したサンプルのみを取り出す） |
+| `--depth_threshold_for_homo_del` | ホモ欠失（1/1）とみなすMEAN_ORIG_RDの閾値（デフォルト: `10`） |
 | `--out` | 出力ファイル名 |
