@@ -88,6 +88,7 @@ filter_annovar_result.R \
 ### バリアント機能でフィルター
 
 ```bash
+# 以下のパターンに該当するバリアントは除かれる
 `ExonicFunc.refGene == "synonymous SNV" & SpliceAI_max_score < 0.1`
 `ExonicFunc.refGene == "." & !str_detect(GeneDetail.refGene, "UTR") &　SpliceAI_max_score < 0.1`
 ```
