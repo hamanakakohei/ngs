@@ -1,13 +1,14 @@
 # バリアントフィルタリングツール
 
 `filter_annovar_result.R`：**Annovar** および他のバリアントコーラー（例：**XHMM**）の結果を統合し、遺伝子に対するアノテーションを付けて、
-アレル頻度・遺伝形式などを元にバリアントと遺伝子をフィルターする。
+アレル頻度・遺伝形式などでバリアントと遺伝子をフィルターする。
 
 ---
 
 ## 🔧 インストール方法
 
 ```bash
+# condaの仮想環境内で
 mamba install -c conda-forge \
     pandas numpy requests \
     r-tidyverse r-argparse r-glue
@@ -24,7 +25,7 @@ git clone https://github.com/hamanakakohei/misc
 # AD用
 Rscript filter_annovar_result.R \
   --annovar_result exome_summary.txt \
-  --out filtered.AD.txt \
+  --out exome_summary.filtered.AD.txt \
   --af_threshold_tommo 0.0005 \
   --af_threshold_exac_all 0.00005 \
   --af_threshold_exac_eas 0.0005 \
@@ -37,7 +38,7 @@ Rscript filter_annovar_result.R \
 # AR用
 Rscript filter_annovar_result.R \
   --annovar_result exome_summary.txt \
-  --out filtered.AR.txt \
+  --out exome_summary.filtered.AR.txt \
   --af_threshold_tommo 0.01 \
   --af_threshold_exac_all 0.01 \
   --af_threshold_exac_eas 0.01 \
@@ -50,7 +51,7 @@ Rscript filter_annovar_result.R \
 # XL用
 Rscript filter_annovar_result.R \
   --annovar_result exome_summary.txt \
-  --out filtered.XL.txt \
+  --out exome_summary.filtered.XL.txt \
   --af_threshold_exac_all 0.00005 \
   --af_threshold_exac_eas 0.0005 \
   --inheritance XL \
@@ -88,19 +89,19 @@ Rscript filter_annovar_result.R \
 
 | オプション | 説明 |
 |------------|------|
-| `--gene_annotations` | 遺伝子に関するアノテーションファイルを複数指定可（GenCC, G2P, PanelAppなど）。各ファイルには 遺伝子名を入れた`Gene.refGene` 列が必要。 |
+| `--gene_annotations` | 遺伝子に関するアノテーションファイルを、カンマかスペース区切りで複数指定可（GenCC, G2P, PanelAppなど）。各ファイルには 遺伝子名を入れた`Gene.refGene` 列が必要。 |
 
 ### 他のバリアントコーラー結果の統合
 
 | オプション | 説明 |
 |------------|------|
-| `--other_caller_results` | XHMMなど他のコーラーの出力ファイル。複数指定可。事前に整形が必要（例：XHMMは `preprocess_XHMM.py` を使用）。 |
+| `--other_caller_results` | XHMMなど他のコーラーの出力ファイル。カンマかスペース区切りで複数指定可。事前に整形が必要（例：XHMMは `preprocess_XHMM.py` を使用）。 |
 
 ---
 
 ## 🔨 前処理用の補助スクリプト
 
-入力に使うファイルを準備するためのスクリプトも含まれています。
+オプションに与えるファイルを準備するためのスクリプトも含まれています。
 
 ### `--gene_annotations` 用
 
