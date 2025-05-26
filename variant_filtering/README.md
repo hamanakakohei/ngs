@@ -5,7 +5,7 @@
 
 ---
 
-## 🔧 インストール方法
+## 🔧 ０．インストール方法
 
 ```bash
 # condaの仮想環境内で
@@ -19,7 +19,7 @@ git clone https://github.com/hamanakakohei/misc
 
 ---
 
-## 🔧 使い方
+## 🔧 １．使い方
 
 ```bash
 # AD用
@@ -61,14 +61,14 @@ filter_annovar_result.R \
   --other_caller_results cleaned_xhmm_Sample_10000.tsv.gz
 ```
 
-### 入力と出力
+### １－１．入力と出力
 
 | オプション | 説明 |
 |------------|------|
 | `--annovar_result` | Annovarによるアノテーション結果（TSV） |
 | `--out` | 出力ファイル名（TSV） |
 
-### アレル頻度でフィルター
+### １－２．アレル頻度でフィルター
 
 | オプション | 説明 |
 |------------|------|
@@ -77,7 +77,7 @@ filter_annovar_result.R \
 | `--af_threshold_exac_all` | ExAC（全集団）のアレル頻度の上限値。指定しなければフィルターしない。 |
 | `--af_threshold_exac_eas` | ExAC（東アジア集団）のアレル頻度の上限値。指定しなければフィルターしない。 |
 
-### 遺伝形式でフィルター
+### １－３．遺伝形式でフィルター
 
 | オプション | 説明 |
 |------------|------|
@@ -85,7 +85,7 @@ filter_annovar_result.R \
 | `--sample_filter` | 指定したサンプルで見られるバリアントのみ出力。`--inheritance`でARを指定時は、当該サンプルに2つ以上のバリアントがある遺伝子のみ抽出される。|
 | `--gene_mode_of_inheritance_filter` | GenCCやG2Pに基づき、`--inheritance`で指定された遺伝形式で疾患を伝える遺伝子のバリアントのみを出力。トリオ解析など探索的解析ではこのオプションは外す。 |
 
-### バリアント機能でフィルター
+### １－４．バリアント機能でフィルター
 
 ```bash
 # 以下のパターンに該当するバリアントは除かれる
@@ -93,13 +93,13 @@ filter_annovar_result.R \
 `ExonicFunc.refGene == "." & !str_detect(GeneDetail.refGene, "UTR") &　SpliceAI_max_score < 0.1`
 ```
 
-### 遺伝子に対するアノテーションファイルの統合
+### １－５．遺伝子に対するアノテーションファイルの統合
 
 | オプション | 説明 |
 |------------|------|
 | `--gene_annotations` | 遺伝子に関するアノテーションファイルを、スペース区切りで複数指定可（GenCC, G2P, PanelAppなど）。各ファイルには 遺伝子名を入れた`Gene.refGene` 列が必要。 |
 
-### 他のバリアントコーラー結果の統合
+### １－６．他のバリアントコーラー結果の統合
 
 | オプション | 説明 |
 |------------|------|
@@ -107,11 +107,11 @@ filter_annovar_result.R \
 
 ---
 
-## 🔨 前処理用の補助スクリプト
+## 🔨 ２．前処理用の補助スクリプト
 
 オプションに与えるファイルを準備するためのスクリプトも含まれています。
 
-### `--gene_annotations` 用
+### ２－１．`--gene_annotations` 用
 
 | スクリプト | 説明 |
 |------------|------|
@@ -124,14 +124,14 @@ filter_annovar_result.R \
 - cleaned_GenCC_2025_05_20.tsv.gz
 - cleaned_PanelApp_ataxia_2025_05_20.tsv.gz
 
-### `--other_caller_results` 用
+### ２－２．`--other_caller_results` 用
 
 | スクリプト | 説明 |
 |------------|------|
 | `preprocess_XHMM.py` | XHMMの出力を整形 |
 | （その他） | 他のコーラー結果を入力したい場合は、列名の要件など`misc/utils/annovar.R` 内の`cat_another_caller_variants` 関数を参照してください |
 
-### 使い方
+#### ２－２－１．使い方
 
 ```bash
 preprocess_XHMM.py \
