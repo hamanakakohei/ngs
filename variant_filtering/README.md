@@ -4,7 +4,9 @@
 アレル頻度・遺伝形式などでバリアントと遺伝子をフィルターする。
 
 
+
 ---
+
 
 
 ## 🔧 ０．インストール方法
@@ -20,7 +22,9 @@ git clone https://github.com/hamanakakohei/misc
 ```
 
 
+
 ---
+
 
 
 ## 🔧 １．使い方
@@ -110,7 +114,9 @@ filter_annovar_result.R \
 | `--other_caller_results` | XHMMなど他のコーラーの出力ファイル。スペース区切りで複数指定可。事前に整形が必要（例：XHMMは `preprocess_XHMM.py` を使用）。 |
 
 
+
 ---
+
 
 
 ## 🔨 ２．前処理用の補助スクリプト
