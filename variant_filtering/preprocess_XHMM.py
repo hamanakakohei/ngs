@@ -24,7 +24,7 @@ if args.out is None:
 
 
 # ファイル読む
-df = pd.read_table( args.xhmm_result )
+df = pd.read_table( args.xhmm_result, low_memory=False )
 
 
 # INTERVAL 列を Chr, Start, End に分解
