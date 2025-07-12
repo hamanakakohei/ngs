@@ -1,0 +1,37 @@
+#!/bin/bash
+#$ -S /bin/bash
+#$ -N 03_canvas
+#$ -cwd
+#$ -pe OpenMP 4
+#$ -l s_vmem=8G -l mem_req=8G
+#$ -o logs/03/$TASK_ID.log
+#$ -e logs/03/$TASK_ID.log
+
+
+set -euo pipefail
+
+
+# 位置引数
+FAMILY_BAM_INFO_LIST=$1
+POP_VCF=$2
+REF=$3
+GENOME_FOLDER=$4
+KMER=$5
+FILTER_BED=$6
+
+
+# 家族ID（出力フォルダ名になる）とメンバーのbam等の情報
+read FAMILY_ID BAM_INFO < <(sed -n "${SGE_TASK_ID}p" "$FAMILY_BAM_INFO_LIST")
+
+
+# 実行
+mkdir -p logs/03
+
+bash scripts/03_canvas.sh \
+  --kmer $KMER \
+  --ref $REF \
+  --bam_info $BAM_INFO \
+  --filter_bed $FILTER_BED \
+  --genome_folder $GENOME_FOLDER \
+  --pop_vcf $POP_VCF \
+  --out results/03/$FAMILY_ID

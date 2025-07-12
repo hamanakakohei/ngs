@@ -1,0 +1,30 @@
+#!/bin/bash
+#$ -S /bin/bash
+#$ -N 01_canvas
+#$ -cwd
+#$ -pe OpenMP 4
+#$ -l s_vmem=8G -l mem_req=8G
+#$ -o logs/01/$TASK_ID.log
+#$ -e logs/01/$TASK_ID.log
+
+
+set -euo pipefail
+
+
+# 位置引数
+IN_OUT_LIST=$1
+REF=$2
+
+
+# 入力するVCFと出力するVCF名
+read IN OUT < <(sed -n "${SGE_TASK_ID}p" "$IN_OUT_LIST")
+
+
+# 実行
+mkdir -p logs/01
+
+bash scripts/01_canvas.sh \
+  --ref "$REF" \
+  --vcf "$IN" \
+  --out "$OUT" \
+  --threads "$NSLOTS"
