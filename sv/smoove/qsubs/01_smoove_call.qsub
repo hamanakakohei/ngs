@@ -1,0 +1,38 @@
+#!/bin/bash
+#$ -S /bin/bash
+#$ -N 01_smoove
+#$ -cwd
+#$ -pe OpenMP 4
+#$ -l s_vmem=8G -l mem_req=8G
+#$ -o logs/01/$TASK_ID.log
+#$ -e logs/01/$TASK_ID.log
+
+# 使い方
+# qsub -t 1-100:1 -tc 10 qsubs/01_smoove_call.qsub \
+#   data/sample_cram.txt \
+#   data/hg38.fa \
+#   data/exclude.cnvnator_100bp.GRCh38.20170403.bed
+
+
+set -euo pipefail
+
+
+# 位置引数
+SAMPLE_FILE=$1
+REF=$2
+EXCLUDE=$3
+
+
+# サンプル名とCRAMパス
+read SAMPLE CRAM < <(sed -n "${SGE_TASK_ID}p" "$SAMPLE_FILE")
+
+
+# 実行
+mkdir -p logs/01
+
+bash scripts/01_smoove_call.sh \
+  --ref "$REF" \
+  --exclude "$EXCLUDE" \
+  --cram "$CRAM" \
+  --sample "$SAMPLE" \
+  --threads "$NSLOTS"
