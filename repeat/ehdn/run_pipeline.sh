@@ -1,49 +1,53 @@
 #!/bin/bash
 
+set -euo pipefail
 
-SAMPLE_CRAM_PAIRS=data/sample-cram_pairs.list
-REF=
-MANIFEST=data/manifest.list
-ANNOVAR=annovar2016oct/annotate_variation.pl
+
+SAMPLE_CRAM_LIST=data/sample_cram.txt
+REF=data/Homo_sapiens_assembly38.fasta
+
+MANIFEST=data/manifest.txt
+PREFIX=all_samples
+ANNOVAR=annovar20250302/annotate_variation.pl
 HUMNA_DB=annovar/201612/hg38
-FAMILY_SAMPLE_PAIRS=data/family-sample_pairs.list
-SAMPLES=data/samples.list
-CONTROLS=data/controls.list
+
+PROBANDS=data/probands.txt
+CONTROLS=data/controls.txt
+PROBAND_RELATIVE=data/proband-relative_pairs.txt
+
+N_SAMPLE=$(wc -l < "$SAMPLE_CRAM_LIST")
 
 
-# ステップ１：全サンプルで EHdn profile をする
-while read LINE; do
-	SAMPLE=`echo $LINE | awk '{print $1}'`
-	CRAM=`echo $LINE | awk '{print $2}'`
-
-	./01_ehdn_profile.sh \
-		--sample "$SAMPLE" \
-		--bam    "$CRAM" \
-		--outdir results_step1/"$SAMPLE" \
-		--ref    "$REF"
-done < "$SAMPLE_CRAM_PAIRS"
+# 01 全サンプルでEHdn profileする
+qsub -t 1-"$N_SAMPLE":1 -tc 10 qsubs/01.qsub \
+  "$SAMPLE_CRAM_LIST" \
+  "$REF"
 
 
-# ステップ２：結果をマージして、outlier解析をして、Annovarをかける
-./02_ehdn_merge_and_outlier.sh \
-	--manifest 	"$MANIFEST" \
-	--prefix 	all_samples \
-	--ref 		"$REF" \
-	--annovar 	"$ANNOVAR" \
-	--human_db 	"$HUMAN_DB"
+# 02 コールが多すぎるサンプルを見つける
+# この結果を見てマニフェストファイルを編集して、03から再開する
+mkdir -p logs/02
+
+conda run -n ehdn_env \
+  scripts/02_QC.py \
+  > logs/02/log 2>&1
 
 
-# ステップ３：アレル頻度を付けて、outlier motifとoutlier locus結果をマージする
-while read SAMPLE; do
-	awk -v SAMPLE="${SAMPLE}" '$1==SAMPLE && $2!=SAMPLE {print $2}' "$FAMILY_SAMPLE_PAIRS" > result_step3/"$SAMPLE".other_family_members.txt
+# 03 結果をマージして、outlier解析をして、Annovarをかける
+mkdir -p logs/03
 
-	./03_add_allele_count.py \
-		--proband 		"$SAMPLE" \
-		--other_family_members 	result_step3/"$SAMPLE".other_family_members.txt \
-		--controls      	"$CONTROLS" \
-		--outlier_locus 	result_step2/all_samples.outlier_locus.annotated.tsv \
-		--outlier_motif 	result_step2/all_samples.outlier_motif.tsv \
-		--out 			result_step3/"$SAMPLE"
-done < "$SAMPLES"
+scripts/03_ehdn_merge_and_outlier.sh \
+  --manifest "$MANIFEST" \
+  --prefix   "$PREFIX" \
+  --ref      "$REF" \
+  --annovar  "$ANNOVAR" \
+  --human_db "$HUMAN_DB" \
+  > logs/03/log 2>&1
 
 
+# 04：アレル頻度を付けて、outlier motifとoutlier locus結果をマージする
+qsub -t 1-"$N_SAMPLE":1 -tc 10 qsubs/04.qsub \
+  "$PROBANDS" \
+  "$CONTROLS" \
+  "$PROBAND_RELATIVE" \
+  "$PREFIX"

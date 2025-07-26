@@ -1,0 +1,31 @@
+#!/bin/bash
+#$ -S /bin/bash
+#$ -N 01_ehdn
+#$ -cwd
+#$ -pe OpenMP 4
+#$ -l s_vmem=8G -l mem_req=8G
+#$ -o logs/01/$TASK_ID.log
+#$ -e logs/01/$TASK_ID.log
+
+set -euo pipefail
+
+
+# 位置引数
+SAMPLE_FILE=$1
+REF=$2
+
+
+# サンプル名とCRAMパス
+read SAMPLE CRAM < <(sed -n "${SGE_TASK_ID}p" "$SAMPLE_FILE")
+
+
+# 実行
+OUTDIR="results/01/$SAMPLE"
+mkdir -p "$OUTDIR"
+mkdir -p logs/01
+
+scripts/01_ehdn_profile.sh \
+  --sample "$SAMPLE" \
+  --bam    "$CRAM" \
+  --ref    "$REF" \
+  --outdir "$OUTDIR"
