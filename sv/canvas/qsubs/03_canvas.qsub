@@ -4,7 +4,7 @@
 #$ -cwd
 #$ -q xxx.q
 #$ -pe OpenMP 4
-#$ -l s_vmem=8G -l mem_req=8G
+#$ -l s_vmem=8G
 #$ -o logs/03/$TASK_ID.log
 #$ -e logs/03/$TASK_ID.log
 
