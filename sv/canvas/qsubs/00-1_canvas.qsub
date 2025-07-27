@@ -1,6 +1,6 @@
 #!/bin/bash
 #$ -S /bin/bash
-#$ -N canvas_01
+#$ -N canvas_00-1
 #$ -cwd
 #$ -q xxx.q
 #$ -pe OpenMP 4
