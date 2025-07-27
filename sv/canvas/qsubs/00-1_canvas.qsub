@@ -5,8 +5,8 @@
 #$ -q xxx.q
 #$ -pe OpenMP 4
 #$ -l s_vmem=8G
-#$ -o logs/01/$TASK_ID.log
-#$ -e logs/01/$TASK_ID.log
+#$ -o logs/00-1/$TASK_ID.log
+#$ -e logs/00-1/$TASK_ID.log
 
 
 set -euo pipefail
