@@ -24,7 +24,7 @@ read IN OUT < <(sed -n "${SGE_TASK_ID}p" "$IN_OUT_LIST")
 # 実行
 mkdir -p logs/01
 
-bash scripts/01_prep_snp_each_chr.sh \
+bash scripts/00-1_prep_snp_each_chr.sh \
   --ref "$REF" \
   --vcf "$IN" \
   --out "$OUT" \
