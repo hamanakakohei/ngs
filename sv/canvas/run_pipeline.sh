@@ -45,6 +45,7 @@ N_FAMILY=$(wc -l < "$FAMILY_BAM_INFO_LIST")
 #  "$REF"
 #
 ## 00-2 それらを結合する
+#mkdir logs/00-2
 #bash scripts/00-2_canvas.sh \
 #  --vcf_list "$SITE_VCF_LIST" \
 #  --out "$SNP" \
