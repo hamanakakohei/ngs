@@ -1,7 +1,8 @@
 #!/bin/bash
 #$ -S /bin/bash
-#$ -N 01_canvas
+#$ -N canvas_01
 #$ -cwd
+#$ -q xxx.q
 #$ -pe OpenMP 4
 #$ -l s_vmem=8G -l mem_req=8G
 #$ -o logs/01/$TASK_ID.log
