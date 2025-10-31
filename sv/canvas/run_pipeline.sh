@@ -19,7 +19,7 @@
 
 
 set -euo pipefail
-export PATH="/usr/local/genome/samtools-1.17/bin:$PATH"
+export PATH="/path/to/samtools-1.17/bin:$PATH"
 export PATH=$PATH:Canvas-1.40.0.1613+master_x64/
 
 
