@@ -4,7 +4,7 @@
 library(tidyverse)
 library(argparse)
 library(glue)
-source("misc/utils/annovar.R")
+source("~/github/misc/utils/annovar.R")
 
 parser = ArgumentParser(description = "Annovarと他コーラーのバリアント表を統合しつつ、アレル頻度、遺伝形式、対象サンプルなどの条件でフィルターする。")
 parser$add_argument("--annovar_result",        type = "character", required = TRUE, help = "Annovar結果のテーブルファイル")
@@ -101,7 +101,8 @@ df = left_join( df, variant_carriers, by="variant_id" ) %>%
 
 
 # 指定したサンプルが持っているバリアントのみ、ARなら2hit以上の遺伝子のみ
-pattern = glue("{argv$sample_filter};")
+#pattern = glue("{argv$sample_filter};")
+pattern = glue("{argv$sample_filter}")
 
 if( !is.null( argv$sample_filter ) ){
   df = filter( df, str_detect(carriers, pattern) ) 
