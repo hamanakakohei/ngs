@@ -6,8 +6,13 @@
 
 
 ---
-
-
+## 🔧 To do
+filter_annovar_results.R内の
+```bash
+#pattern = glue("{argv$sample_filter};")
+pattern = glue("{argv$sample_filter}")
+```
+この部分をどうするか、、、";"つけないとサンプル名マッチが揺らぐ
 
 ## 🔧 ０．インストール方法
 
